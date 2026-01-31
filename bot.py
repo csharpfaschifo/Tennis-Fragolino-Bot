@@ -22,7 +22,11 @@ import io
 # ============================================================================
 
 # Il tuo token del bot (lo hai ottenuto da BotFather)
-TELEGRAM_TOKEN = "8353273276:AAGcgFQbfh6BcN8fbKbwWG8x59XO4Pd23_o"  # ← INSERISCI IL TOKEN
+TELEGRAM_TOKEN = "8353273276:AAGcgFQbfh6BcN8fbKbwWG8x59XO4Pd23_o" 
+# Configura path Tesseract per Railway
+import os
+if os.path.exists('/usr/bin/tesseract'):
+    pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
 
 # Path del file Excel su Google Drive
 EXCEL_FILE_ID = "ID_FILE_GOOGLE_DRIVE"  # ← Lo otterrai dopo
@@ -338,4 +342,5 @@ def main():
     application.run_polling(allowed_updates=Update.ALL_TYPES)
 
 if __name__ == '__main__':
+
     main()
