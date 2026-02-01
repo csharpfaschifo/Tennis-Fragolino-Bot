@@ -269,7 +269,11 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         # OCR
         await update.message.reply_text("🔍 Estrazione testo...")
-        text = pytesseract.image_to_string(img, lang='eng+ita')
+        text = pytesseract.image_to_string(
+                                            img,
+                                            lang="ita+eng",
+                                            config="--psm 6"
+                                        )
         
         # Processa match
         await update.message.reply_text("⚙️ Processamento dati...")
@@ -358,6 +362,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
