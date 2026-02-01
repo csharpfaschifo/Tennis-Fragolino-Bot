@@ -12,14 +12,17 @@ from openpyxl import load_workbook
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 
-import shutil
+# import shutil
 import pytesseract
+pytesseract.pytesseract.tesseract_cmd = "/usr/bin/tesseract"
+import subprocess
+print(subprocess.run(["/usr/bin/tesseract", "--version"], capture_output=True, text=True).stdout)
 
-tesseract_path = shutil.which("tesseract")
-if tesseract_path:
-    pytesseract.pytesseract.tesseract_cmd = tesseract_path
-else:
-    raise RuntimeError("❌ Tesseract non trovato nel PATH")
+# tesseract_path = shutil.which("tesseract")
+# if tesseract_path:
+#     pytesseract.pytesseract.tesseract_cmd = tesseract_path
+# else:
+#     raise RuntimeError("❌ Tesseract non trovato nel PATH")
 
 
 # ============================================================================
@@ -355,6 +358,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
