@@ -16,6 +16,8 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 import pytesseract
 pytesseract.pytesseract.tesseract_cmd = "/usr/bin/tesseract"
 import subprocess
+print("DEBUG: which tesseract =", shutil.which("tesseract"))
+print("DEBUG: tesseract version:")
 print(subprocess.run(["/usr/bin/tesseract", "--version"], capture_output=True, text=True).stdout)
 
 # tesseract_path = shutil.which("tesseract")
@@ -262,18 +264,31 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         photo_file = await update.message.photo[-1].get_file()
         photo_path = "temp_match.jpg"
         await photo_file.download_to_drive(photo_path)
+        print("DEBUG: immagine salvata in:", path)
         
+        from PIL import Image
+        img = Image.open(path)
+        print("DEBUG: formato immagine:", img.format, img.mode, img.size)
+
         # Preprocessing immagine
         img = Image.open(photo_path)
         img = gray_scale_img(img)
         
         # OCR
         await update.message.reply_text("🔍 Estrazione testo...")
-        text = pytesseract.image_to_string(
-                                            img,
-                                            lang="ita+eng",
-                                            config="--psm 6"
-                                        )
+        print("DEBUG: sto per chiamare pytesseract.image_to_string")
+        try:
+            text = pytesseract.image_to_string(
+                img,
+                lang="ita+eng",
+                config="--psm 6"
+            )
+            print("DEBUG: OCR completato")
+        except Exception as e:
+            print("❌ ERRORE DURANTE OCR")
+            traceback.print_exc()
+            raise
+
         
         # Processa match
         await update.message.reply_text("⚙️ Processamento dati...")
@@ -316,11 +331,12 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         # Cleanup
         os.remove(photo_path)
         
-    except Exception as e:
-        await update.message.reply_text(
-            f"❌ Errore durante il processamento:\n{str(e)}\n\n"
-            "Riprova con un'altra immagine più chiara."
-        )
+        except Exception as e:
+            await update.message.reply_text(
+                "❌ Errore durante il processamento.\n"
+                "Guarda i log di Render per il dettaglio."
+            )
+            raise
 
 async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Gestisce messaggi di testo"""
@@ -362,6 +378,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
