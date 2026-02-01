@@ -12,7 +12,7 @@ from openpyxl import load_workbook
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 
-# import shutil
+import shutil
 import pytesseract
 pytesseract.pytesseract.tesseract_cmd = "/usr/bin/tesseract"
 import subprocess
@@ -383,6 +383,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
