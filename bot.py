@@ -18,7 +18,7 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 # ============================================================================
 
 # Il tuo token del bot (lo hai ottenuto da BotFather)
-#TELEGRAM_TOKEN = "8353273276:AAGcgFQbfh6BcN8fbKbwWG8x59XO4Pd23_o"
+TELEGRAM_TOKEN = os.environ["TELEGRAM_TOKEN"]
 # Configura path Tesseract per Railway
 import os
 if os.path.exists('/usr/bin/tesseract'):
@@ -350,6 +350,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
