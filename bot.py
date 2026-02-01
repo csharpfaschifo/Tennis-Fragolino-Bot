@@ -331,12 +331,12 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         # Cleanup
         os.remove(photo_path)
         
-        except Exception as e:
+        except Exception:
             await update.message.reply_text(
-                "❌ Errore durante il processamento.\n"
-                "Guarda i log di Render per il dettaglio."
+                "❌ Errore durante il processamento:\n"
+                "tesseract is not installed or it's not in your PATH"
             )
-            raise
+
 
 async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Gestisce messaggi di testo"""
@@ -378,6 +378,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
