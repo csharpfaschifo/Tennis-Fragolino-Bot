@@ -12,10 +12,6 @@ import pytesseract
 from openpyxl import load_workbook
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
-from google.oauth2.service_account import Credentials
-from googleapiclient.discovery import build
-from googleapiclient.http import MediaFileUpload, MediaIoBaseDownload
-import io
 
 # ============================================================================
 # CONFIGURAZIONE
@@ -344,3 +340,4 @@ def main():
 if __name__ == '__main__':
 
     main()
+
