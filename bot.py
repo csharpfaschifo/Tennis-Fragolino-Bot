@@ -205,17 +205,17 @@ def scrittura_in_excel(df, tennista):
 # GOOGLE DRIVE FUNCTIONS
 # ============================================================================
 
-def download_excel_from_drive():
-    """Scarica l'Excel da Google Drive"""
-    # Implementa con le tue credenziali Google
-    # Per ora usa file locale
-    pass
+# def download_excel_from_drive():
+#     """Scarica l'Excel da Google Drive"""
+#     # Implementa con le tue credenziali Google
+#     # Per ora usa file locale
+#     pass
 
-def upload_excel_to_drive():
-    """Carica l'Excel aggiornato su Google Drive"""
-    # Implementa con le tue credenziali Google
-    # Per ora salva solo in locale
-    pass
+# def upload_excel_to_drive():
+#     """Carica l'Excel aggiornato su Google Drive"""
+#     # Implementa con le tue credenziali Google
+#     # Per ora salva solo in locale
+#     pass
 
 # ============================================================================
 # TELEGRAM BOT HANDLERS
@@ -340,4 +340,5 @@ def main():
 if __name__ == '__main__':
 
     main()
+
 
