@@ -369,7 +369,7 @@ def main():
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text))
 
     PORT = int(os.environ.get("PORT", 10000))
-    RENDER_URL = "https://tennis-fragolino-bot.onrender.com"
+    RENDER_URL = "https://tennis-fragolino-bot-1.onrender.com"
 
     print("🤖 Bot avviato in modalità WEBHOOK")
 
@@ -383,6 +383,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
