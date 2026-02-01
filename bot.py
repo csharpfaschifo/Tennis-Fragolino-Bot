@@ -8,10 +8,19 @@ import re
 import pandas as pd
 import numpy as np
 from PIL import Image, ImageEnhance, ImageFilter
-import pytesseract
 from openpyxl import load_workbook
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
+
+import shutil
+import pytesseract
+
+tesseract_path = shutil.which("tesseract")
+if tesseract_path:
+    pytesseract.pytesseract.tesseract_cmd = tesseract_path
+else:
+    raise RuntimeError("❌ Tesseract non trovato nel PATH")
+
 
 # ============================================================================
 # CONFIGURAZIONE
@@ -19,10 +28,6 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 
 # Il tuo token del bot (lo hai ottenuto da BotFather)
 TELEGRAM_TOKEN = os.environ["TELEGRAM_TOKEN"]
-# Configura path Tesseract per Railway
-import os
-if os.path.exists('/usr/bin/tesseract'):
-    pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
 
 # Path del file Excel su Google Drive
 EXCEL_FILE_ID = "ID_FILE_GOOGLE_DRIVE"  # ← Lo otterrai dopo
@@ -350,6 +355,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
