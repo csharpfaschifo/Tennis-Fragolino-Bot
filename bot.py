@@ -264,10 +264,10 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         photo_file = await update.message.photo[-1].get_file()
         photo_path = "temp_match.jpg"
         await photo_file.download_to_drive(photo_path)
-        print("DEBUG: immagine salvata in:", path)
+        print("DEBUG: immagine salvata in:", photo_path)
         
         from PIL import Image
-        img = Image.open(path)
+        img = Image.open(photo_path)
         print("DEBUG: formato immagine:", img.format, img.mode, img.size)
 
         # Preprocessing immagine
@@ -383,6 +383,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
