@@ -18,7 +18,7 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 # ============================================================================
 
 # Il tuo token del bot (lo hai ottenuto da BotFather)
-TELEGRAM_TOKEN = "8353273276:AAGcgFQbfh6BcN8fbKbwWG8x59XO4Pd23_o" 
+#TELEGRAM_TOKEN = "8353273276:AAGcgFQbfh6BcN8fbKbwWG8x59XO4Pd23_o"
 # Configura path Tesseract per Railway
 import os
 if os.path.exists('/usr/bin/tesseract'):
@@ -327,44 +327,29 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # Cancella tutto dal "def main():" in giù e sostituisci con questo
 # ============================================================================
 
-import threading
-import http.server
-
-# Mini server HTTP per soddisfare Render (richiede porta aperta)
-class HealthHandler(http.server.BaseHTTPRequestHandler):
-    def do_GET(self):
-        self.send_response(200)
-        self.send_header("Content-type", "text/plain")
-        self.end_headers()
-        self.wfile.write(b"Bot is running")
-    
-    def log_message(self, format, *args):
-        pass  # Silenzia i log
-
-def avvia_server_http():
-    port = int(os.environ.get("PORT", 8000))
-    server = http.server.HTTPServer(("0.0.0.0", port), HealthHandler)
-    print(f"🌐 Server HTTP avviato sulla porta {port}")
-    server.serve_forever()
-
 def main():
-    # Avvia server HTTP in background
-    server_thread = threading.Thread(target=avvia_server_http, daemon=True)
-    server_thread.start()
-    
-    # Crea applicazione Telegram
     application = Application.builder().token(TELEGRAM_TOKEN).build()
-    
-    # Aggiungi handlers
+
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("help", help_command))
     application.add_handler(MessageHandler(filters.PHOTO, handle_photo))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text))
-    
-    print("🤖 Bot avviato!")
-    application.run_polling(allowed_updates=Update.ALL_TYPES)
+
+    PORT = int(os.environ.get("PORT", 10000))
+    RENDER_URL = "https://tennis-fragolino-bot.onrender.com"
+
+    print("🤖 Bot avviato in modalità WEBHOOK")
+
+    application.run_webhook(
+        listen="0.0.0.0",
+        port=PORT,
+        url_path="/",
+        webhook_url=RENDER_URL
+    )
+
 
 if __name__ == '__main__':
     main()
+
 
 
