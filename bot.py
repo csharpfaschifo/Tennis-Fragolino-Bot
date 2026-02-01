@@ -1,4 +1,4 @@
-# ============================================================================
+cept# ============================================================================
 # TELEGRAM BOT - TENNIS MATCH PROCESSOR
 # Bot che riceve foto di match e aggiorna automaticamente l'Excel su Google Drive
 # ============================================================================
@@ -331,11 +331,11 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         # Cleanup
         os.remove(photo_path)
         
-        except Exception:
-            await update.message.reply_text(
-                "❌ Errore durante il processamento:\n"
-                "tesseract is not installed or it's not in your PATH"
-            )
+        # except Exception:
+        #     await update.message.reply_text(
+        #         "❌ Errore durante il processamento:\n"
+        #         "tesseract is not installed or it's not in your PATH"
+        #     )
 
 
 async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -378,6 +378,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
