@@ -40,7 +40,8 @@ print(subprocess.run(["/usr/bin/tesseract", "--version"], capture_output=True, t
 # Il tuo token del bot (lo hai ottenuto da BotFather)
 TELEGRAM_TOKEN = os.environ["TELEGRAM_TOKEN"]
 ALLOWED_USERS = {
-    8512235231
+    8512235231,
+    49697387
 }
 
 
@@ -440,3 +441,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
