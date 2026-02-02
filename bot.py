@@ -193,8 +193,10 @@ def processa_match(testo_match, lista_tennisti):
 def scrittura_in_excel(df, tennista):
     tennista = tennista.lower()
     if not os.path.exists(EXCEL_LOCAL_PATH):
+        df_init = pd.DataFrame({"INIT": []})
         with pd.ExcelWriter(EXCEL_LOCAL_PATH, engine="openpyxl") as writer:
-            pass
+            df_init.to_excel(writer, sheet_name="INIT", index=False)
+
 
     sheets = pd.read_excel(EXCEL_LOCAL_PATH, sheet_name=None)
     
@@ -394,6 +396,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
