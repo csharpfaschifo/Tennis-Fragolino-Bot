@@ -11,7 +11,13 @@ from PIL import Image, ImageEnhance, ImageFilter
 from openpyxl import load_workbook
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
-
+from googleapiclient.discovery import build
+from google.oauth2 import service_account
+from googleapiclient.http import MediaFileUpload
+import json
+import traceback
+from googleapiclient.http import MediaIoBaseDownload
+import io
 import shutil
 import pytesseract
 pytesseract.pytesseract.tesseract_cmd = "/usr/bin/tesseract"
@@ -41,6 +47,14 @@ ALLOWED_USERS = {
 # Path del file Excel su Google Drive
 EXCEL_FILE_ID = "ID_FILE_GOOGLE_DRIVE"  # ← Lo otterrai dopo
 EXCEL_LOCAL_PATH = "Database_Tennis.xlsx"
+SCOPES = ["https://www.googleapis.com/auth/drive"]
+creds = service_account.Credentials.from_service_account_info(
+    json.loads(os.environ["GOOGLE_APPLICATION_CREDENTIALS"]),
+    scopes=SCOPES
+)
+
+drive_service = build("drive", "v3", credentials=creds)
+EXCEL_FILE_ID = "1WaFe87w0bR2WlweXI-pUFupwUfl8g9g5"
 
 # ============================================================================
 # LISTA TENNISTI
@@ -224,17 +238,33 @@ def scrittura_in_excel(df, tennista):
 # GOOGLE DRIVE FUNCTIONS
 # ============================================================================
 
-# def download_excel_from_drive():
-#     """Scarica l'Excel da Google Drive"""
-#     # Implementa con le tue credenziali Google
-#     # Per ora usa file locale
-#     pass
+# Download Excel da Drive
+def download_excel_from_drive():
+    request = drive_service.files().get_media(fileId=EXCEL_FILE_ID)
+    fh = io.FileIO(EXCEL_LOCAL_PATH, "wb")
+    downloader = MediaIoBaseDownload(fh, request)
 
-# def upload_excel_to_drive():
-#     """Carica l'Excel aggiornato su Google Drive"""
-#     # Implementa con le tue credenziali Google
-#     # Per ora salva solo in locale
-#     pass
+    done = False
+    while not done:
+        _, done = downloader.next_chunk()
+
+    print("✅ Excel scaricato da Drive")
+
+# Upload excel in Drive
+def upload_excel_to_drive():
+    media = MediaFileUpload(
+        EXCEL_LOCAL_PATH,
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        resumable=True
+    )
+
+    drive_service.files().update(
+        fileId=EXCEL_FILE_ID,
+        media_body=media
+    ).execute()
+
+    print("✅ Excel caricato su Drive")
+
 
 # ============================================================================
 # TELEGRAM BOT HANDLERS
@@ -265,6 +295,7 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Gestisce le foto ricevute"""
+
     user_id = update.effective_user.id
     if user_id not in ALLOWED_USERS:
         await update.message.reply_text("⛔ Non sei autorizzato a usare questo bot.")
@@ -314,9 +345,13 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         # Salva in Excel
         giocatori = df_match['Giocatore'].values.tolist()
+
+        download_excel_from_drive()
         
         for player in giocatori:
             scrittura_in_excel(df_match, player)
+        
+        upload_excel_to_drive()
         
         # Upload su Drive (opzionale)
         # upload_excel_to_drive()
@@ -405,22 +440,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
