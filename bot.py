@@ -33,6 +33,10 @@ print(subprocess.run(["/usr/bin/tesseract", "--version"], capture_output=True, t
 
 # Il tuo token del bot (lo hai ottenuto da BotFather)
 TELEGRAM_TOKEN = os.environ["TELEGRAM_TOKEN"]
+ALLOWED_USERS = {
+    8512235231
+}
+
 
 # Path del file Excel su Google Drive
 EXCEL_FILE_ID = "ID_FILE_GOOGLE_DRIVE"  # ← Lo otterrai dopo
@@ -261,6 +265,11 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Gestisce le foto ricevute"""
+    user_id = update.effective_user.id
+    if user_id not in ALLOWED_USERS:
+        await update.message.reply_text("⛔ Non sei autorizzato a usare questo bot.")
+        return
+
     try:
         # Messaggio di attesa
         await update.message.reply_text("📸 Foto ricevuta! Sto processando...")
@@ -396,6 +405,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
