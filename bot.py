@@ -192,7 +192,10 @@ def processa_match(testo_match, lista_tennisti):
 
 def scrittura_in_excel(df, tennista):
     tennista = tennista.lower()
-    
+    if not os.path.exists(EXCEL_LOCAL_PATH):
+        with pd.ExcelWriter(EXCEL_LOCAL_PATH, engine="openpyxl") as writer:
+            pass
+
     sheets = pd.read_excel(EXCEL_LOCAL_PATH, sheet_name=None)
     
     if tennista in sheets:
@@ -308,6 +311,14 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         # upload_excel_to_drive()
         
         # Messaggio di conferma
+        print("DEBUG: giocatori estratti =", giocatori)
+        print("DEBUG: len(giocatori) =", len(giocatori))
+        if len(giocatori) != 2:
+            await update.message.reply_text(
+                f"❌ Numero giocatori non valido ({len(giocatori)}): {giocatori}"
+            )
+            return
+        
         g1, g2 = giocatori
         stats1 = df_match[df_match['Giocatore'] == g1].iloc[0]
         stats2 = df_match[df_match['Giocatore'] == g2].iloc[0]
@@ -336,12 +347,12 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         #         "❌ Errore durante il processamento:\n"
         #         "tesseract is not installed or it's not in your PATH"
         #     )
-    except Exception as e:
-        await update.message.reply_text(
-            "❌ Errore durante il processamento.\n"
-            "Guarda i log di Render per il dettaglio."
-        )
-        raise
+        except Exception as e:
+            await update.message.reply_text(
+                f"❌ Errore durante il processamento:\n{type(e).__name__}: {e}"
+            )
+            raise
+
 
 async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Gestisce messaggi di testo"""
@@ -383,6 +394,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
