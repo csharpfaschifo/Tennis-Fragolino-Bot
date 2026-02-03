@@ -105,7 +105,7 @@ def gray_scale_img(img):
     img = sharpener.enhance(2.0)
     img = img.filter(ImageFilter.MedianFilter(size=3))
     arr = np.array(img)
-    threshold = arr.mean() + 15
+    threshold = arr.mean() + 20 # cambiato da 15 a 20
     arr = np.where(arr > threshold, 255, 0).astype("uint8")
     img = Image.fromarray(arr)
     return img
@@ -130,7 +130,7 @@ def estrai_game_da_testo(testo, giocatori):
     if "vento" in testo.lower():
         sezione_punteggi = testo.split("vento")[1][:60].lower()
     else:
-        sezione_punteggi = testo[50:100].lower()
+        sezione_punteggi = testo[0:100].lower() # Modificato da 50:100
     
     digit1 = [el.split(f"{giocatori[0]}")[1] for el in sezione_punteggi.split("\n") if giocatori[0] in el]
     digit2 = [el.split(f"{giocatori[1]}")[1] for el in sezione_punteggi.split("\n") if giocatori[1] in el]
@@ -441,4 +441,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
