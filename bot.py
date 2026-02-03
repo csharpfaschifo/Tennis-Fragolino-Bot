@@ -346,7 +346,8 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         # Salva in Excel
         giocatori = df_match['Giocatore'].values.tolist()
-
+        await update.message.reply_text("📊 Scrittura in Excel...")
+        
         download_excel_from_drive()
         
         for player in giocatori:
@@ -441,5 +442,6 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
