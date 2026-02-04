@@ -209,7 +209,7 @@ def processa_match(testo_match, lista_tennisti):
     
     return pd.DataFrame(risultati)
 
-def scrittura_in_excel(df, tennista):
+async def scrittura_in_excel(df, tennista, update):
     tennista = tennista.lower()
     if not os.path.exists(EXCEL_LOCAL_PATH):
         await update.message.reply_text(f"IN-FUNCTION: not os PATH exists")
@@ -354,7 +354,7 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         download_excel_from_drive()
         
         for player in giocatori:
-            scrittura_in_excel(df_match, player)
+            async scrittura_in_excel(df_match, player, update)
             await update.message.reply_text(f"📊 Scrittura in Excel del {player}...")
         
         upload_excel_to_drive()
@@ -443,6 +443,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
