@@ -233,9 +233,9 @@ async def scrittura_in_excel(df, tennista, update):
     await update.message.reply_text(f"IN-FUNCTION: scrivo in excel il {tennista}")    
     with pd.ExcelWriter(
         EXCEL_LOCAL_PATH,
-        engine="openpyxl",
-        mode="a",
-        if_sheet_exists="replace"
+        engine="openpyxl"#,
+        # mode="a",
+        # if_sheet_exists="replace"
     ) as writer:
         df_aggiornato.to_excel(writer, sheet_name=tennista, index=False)
 
@@ -442,6 +442,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
