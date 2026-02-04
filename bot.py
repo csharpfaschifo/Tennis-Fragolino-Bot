@@ -204,40 +204,63 @@ def processa_match(testo_match, lista_tennisti):
             'BREAK': bp_avversario,
             'ACE': ace_player,
             'HND': hnd,
-            'TIE BREAK': tie_break
+            'TIE BREAK': tie_break,
+            'TORNEO': "ATP Tour"
         })
     
     return pd.DataFrame(risultati)
 
-async def scrittura_in_excel(df, tennista, update):
-    tennista = tennista.lower()
+async def scrittura_in_excel(df_match, update):
+    # Normalizza colonne
+    df_match = df_match.rename(columns={
+        "Giocatore": "GIOCATORE"
+    })
+
+    colonne_finali = [
+        "GIOCATORE",
+        "TOT GAME",
+        "TOT GAME PLAYER",
+        "DF",
+        "BREAK",
+        "ACE",
+        "HND",
+        "TIE BREAK",
+        "TORNEO"
+    ]
+    df_match = df_match[colonne_finali]
+
+    # Se file NON esiste → crealo con 2 sheet
     if not os.path.exists(EXCEL_LOCAL_PATH):
-        await update.message.reply_text(f"IN-FUNCTION: not os PATH exists")
-        df_init = pd.DataFrame({"INIT": []})
+        await update.message.reply_text("📁 Creo nuovo Excel")
+
         with pd.ExcelWriter(EXCEL_LOCAL_PATH, engine="openpyxl") as writer:
-            df_init.to_excel(writer, sheet_name="INIT", index=False)
-    await update.message.reply_text(f"IN-FUNCTION: read_excel")
+            pd.DataFrame().to_excel(writer, sheet_name="Indice", index=False)
+            df_match.to_excel(writer, sheet_name="Statistiche", index=False)
 
-    sheets = pd.read_excel(EXCEL_LOCAL_PATH, sheet_name=None)
+        return
 
-    if tennista in sheets:
-        await update.message.reply_text(f"IN-FUNCTION: {tennista} is in sheet")
-        df_esistente = sheets[tennista]
-    else:
-        df_esistente = pd.DataFrame()
+    # File esiste → append su Statistiche
+    await update.message.reply_text("📊 Aggiorno Statistiche")
 
-    await update.message.reply_text(f"IN-FUNCTION: Creazione df_match")
-    df_match = df[df['Giocatore'] == tennista]
-    df_aggiornato = pd.concat([df_esistente, df_match.iloc[:, 1:]], ignore_index=True)
+    df_esistente = pd.read_excel(EXCEL_LOCAL_PATH, sheet_name="Statistiche")
 
-    await update.message.reply_text(f"IN-FUNCTION: scrivo in excel il {tennista}")    
+    df_aggiornato = pd.concat(
+        [df_esistente, df_match],
+        ignore_index=True
+    )
+
     with pd.ExcelWriter(
         EXCEL_LOCAL_PATH,
-        engine="openpyxl"#,
-        # mode="a",
-        # if_sheet_exists="replace"
+        engine="openpyxl",
+        mode="a",
+        if_sheet_exists="replace"
     ) as writer:
-        df_aggiornato.to_excel(writer, sheet_name=tennista, index=False)
+        pd.read_excel(EXCEL_LOCAL_PATH, sheet_name="Indice").to_excel(
+            writer, sheet_name="Indice", index=False
+        )
+        df_aggiornato.to_excel(
+            writer, sheet_name="Statistiche", index=False
+        )
 
 # ============================================================================
 # GOOGLE DRIVE FUNCTIONS
@@ -348,13 +371,9 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
             return
         
         # Salva in Excel
-        giocatori = df_match['Giocatore'].values.tolist()
-                
         download_excel_from_drive()
         
-        for player in giocatori:
-            await scrittura_in_excel(df_match, player, update)
-            await update.message.reply_text(f"📊 Scrittura in Excel del {player}...")
+        await scrittura_in_excel(df_match, update)
         
         upload_excel_to_drive()
         
@@ -414,11 +433,6 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # MAIN
 # ============================================================================
 
-# ============================================================================
-# Questa parte va alla FINE del tuo bot.py
-# Cancella tutto dal "def main():" in giù e sostituisci con questo
-# ============================================================================
-
 def main():
     application = Application.builder().token(TELEGRAM_TOKEN).build()
 
@@ -442,6 +456,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
