@@ -338,7 +338,6 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
             print("❌ ERRORE DURANTE OCR")
             traceback.print_exc()
             raise
-
         
         # Processa match
         await update.message.reply_text("⚙️ Processamento dati...")
@@ -354,7 +353,7 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         download_excel_from_drive()
         
         for player in giocatori:
-            async scrittura_in_excel(df_match, player, update)
+            await scrittura_in_excel(df_match, player, update)
             await update.message.reply_text(f"📊 Scrittura in Excel del {player}...")
         
         upload_excel_to_drive()
@@ -443,6 +442,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
