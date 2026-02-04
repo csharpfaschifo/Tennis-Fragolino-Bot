@@ -212,21 +212,25 @@ def processa_match(testo_match, lista_tennisti):
 def scrittura_in_excel(df, tennista):
     tennista = tennista.lower()
     if not os.path.exists(EXCEL_LOCAL_PATH):
+        await update.message.reply_text(f"IN-FUNCTION: not os PATH exists")
         df_init = pd.DataFrame({"INIT": []})
         with pd.ExcelWriter(EXCEL_LOCAL_PATH, engine="openpyxl") as writer:
             df_init.to_excel(writer, sheet_name="INIT", index=False)
-
+    await update.message.reply_text(f"IN-FUNCTION: read_excel")
 
     sheets = pd.read_excel(EXCEL_LOCAL_PATH, sheet_name=None)
-    
+
     if tennista in sheets:
+        await update.message.reply_text(f"IN-FUNCTION: {tennista} is in sheet")
         df_esistente = sheets[tennista]
     else:
         df_esistente = pd.DataFrame()
-    
+
+    await update.message.reply_text(f"IN-FUNCTION: Creazione df_match")
     df_match = df[df['Giocatore'] == tennista]
     df_aggiornato = pd.concat([df_esistente, df_match.iloc[:, 1:]], ignore_index=True)
-    
+
+    await update.message.reply_text(f"IN-FUNCTION: scrivo in excel il {tennista}")    
     with pd.ExcelWriter(
         EXCEL_LOCAL_PATH,
         engine="openpyxl",
@@ -439,6 +443,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
