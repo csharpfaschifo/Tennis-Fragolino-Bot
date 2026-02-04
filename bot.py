@@ -369,6 +369,7 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if df_match is None or len(df_match) == 0:
             await update.message.reply_text("❌ Non sono riuscito a identificare i giocatori. Riprova con un'immagine più chiara.")
             return
+        giocatori = df_match["Giocatore"].tolist()
         
         # Salva in Excel
         download_excel_from_drive()
@@ -456,6 +457,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
