@@ -233,7 +233,7 @@ def estrai_game_da_testo(testo: str):
 
     for riga in righe_utili:
         # trova SOLO numeri alla fine della riga
-        match = re.search(r'(\d+(?:\s+\d+)*)$', re.sub("<>@#[]()«»", "", riga))
+        match = re.search(r'(\d+(?:\s+\d+)*)$', re.sub(r"[<\>\@\#\[\]\(\)\«\»]", "", riga))
         if not match:
             continue
 
@@ -610,6 +610,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
