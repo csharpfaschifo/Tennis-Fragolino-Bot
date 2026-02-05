@@ -455,28 +455,28 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         #     )
         #     return
         
-        giocatori_trovati = df_match["Giocatore"].tolist()
+        # giocatori_trovati = df_match["Giocatore"].tolist()
         
-        if len(giocatori_trovati) == 2:
-            g1, g2 = giocatori_trovati
-            stats1 = df_match[df_match['Giocatore'] == g1].iloc[0]
-            stats2 = df_match[df_match['Giocatore'] == g2].iloc[0]
+        # if len(giocatori_trovati) == 2:
+        #     g1, g2 = giocatori_trovati
+        #     stats1 = df_match[df_match['Giocatore'] == g1].iloc[0]
+        #     stats2 = df_match[df_match['Giocatore'] == g2].iloc[0]
         
-            await update.message.reply_text(
-                f"✅ *Match salvato con successo!*\n\n"
-                f"🎾 *{g1.upper()}*\n"
-                f"   • Game: {stats1['TOT GAME PLAYER']}\n"
-                f"   • Ace: {stats1['ACE']}\n"
-                f"   • DF: {stats1['DF']}\n"
-                f"   • Handicap: {stats1['HND']:+d}\n\n"
-                f"🎾 *{g2.upper()}*\n"
-                f"   • Game: {stats2['TOT GAME PLAYER']}\n"
-                f"   • Ace: {stats2['ACE']}\n"
-                f"   • DF: {stats2['DF']}\n"
-                f"   • Handicap: {stats2['HND']:+d}\n\n"
-                f"💾 Database aggiornato!",
-                parse_mode="Markdown"
-            )
+        #     await update.message.reply_text(
+        #         f"✅ *Match salvato con successo!*\n\n"
+        #         f"🎾 *{g1.upper()}*\n"
+        #         f"   • Game: {stats1['TOT GAME PLAYER']}\n"
+        #         f"   • Ace: {stats1['ACE']}\n"
+        #         f"   • DF: {stats1['DF']}\n"
+        #         f"   • Handicap: {stats1['HND']:+d}\n\n"
+        #         f"🎾 *{g2.upper()}*\n"
+        #         f"   • Game: {stats2['TOT GAME PLAYER']}\n"
+        #         f"   • Ace: {stats2['ACE']}\n"
+        #         f"   • DF: {stats2['DF']}\n"
+        #         f"   • Handicap: {stats2['HND']:+d}\n\n"
+        #         f"💾 Database aggiornato!",
+        #         parse_mode="Markdown"
+        #     )
         
         # Cleanup
         os.remove(photo_path)
@@ -523,6 +523,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
