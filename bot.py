@@ -5,6 +5,7 @@
 
 import os
 import re
+import unicodedata
 import pandas as pd
 import numpy as np
 from PIL import Image, ImageEnhance, ImageFilter
@@ -84,13 +85,18 @@ tennisti = [
     "Mattia Bellucci", "Jacob Fearnley", "Aleksandar Vukic", "Alejandro Tabilo",
     "Ethan Quinn", "Adam Walton", "Cristian Garin", "Quentin Halys",
     "Filip Misolic", "Eliot Spizzirri", "Jan Lennard Struff", "Juan Manuel Cerundolo",
-    "James Duckworth", "Emilio Nava", "Hamad Medjedovic", "Roberto Bautista Agut",
+    "James Duckworth", "Emilio Nava", "Hamad Mededovic", "Roberto Bautista Agut",
     "Laslo Djere", "Hugo Gaston", "Pablo Carreno Busta", "Dalibor Svrcina",
     "Alexander Blockx", "Alexander Shevchenko", "Tristan Schoolkate",
     "Carlos Taberner", "Ignacio Buse"
 ]
 
 player_surname = [x.split()[-1].lower() for x in tennisti]
+# Mappa: cognome_normalizzato → cognome_originale
+mappa_cognomi = {
+    normalizza_nome(cognome): cognome
+    for cognome in player_surname
+}
 
 # ============================================================================
 # FUNZIONI DI PREPROCESSING IMMAGINE
@@ -115,16 +121,39 @@ def gray_scale_img(img):
 # ============================================================================
 
 def trova_cognome_nella_lista(lista_tennisti, candidati):
-    i = 0
-    l = []
+    trovati = []
+    
     for nome in candidati:
-        for tennista in lista_tennisti:
-            if tennista == nome:
-                i += 1
-                l.append(tennista)
-                if i == 2:
-                    return l
-    return l
+        nome_norm = normalizza_nome(nome)
+    
+        if nome_norm in mappa_cognomi:
+            cognome_reale = mappa_cognomi[nome_norm]
+    
+            if cognome_reale not in trovati:
+                trovati.append(cognome_reale)
+    
+        if len(trovati) == 2:
+            break
+    
+    return trovati
+
+
+
+def normalizza_nome(nome: str) -> str:
+    if not nome:
+        return ""
+
+    # 1. lowercase
+    nome = nome.lower()
+
+    # 2. decomposizione unicode (accenti → lettere base)
+    nome = unicodedata.normalize("NFKD", nome)
+    nome = "".join(c for c in nome if not unicodedata.combining(c))
+
+    # 3. rimuove tutto ciò che non è lettera
+    nome = re.sub(r"[^a-z]", "", nome)
+
+    return nome
 
 def estrai_game_da_testo(testo, giocatori):
     if giocatori[1] is None:
@@ -427,8 +456,8 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         upload_excel_to_drive()
         
         # Messaggio di conferma
-        print("DEBUG: giocatori estratti =", giocatori)
-        print("DEBUG: len(giocatori) =", len(giocatori))
+        # print("DEBUG: giocatori estratti =", giocatori)
+        # print("DEBUG: len(giocatori) =", len(giocatori))
         # if len(giocatori) != 2:
         #     await update.message.reply_text(
         #         f"❌ Numero giocatori non valido ({len(giocatori)}): {giocatori}"
@@ -500,4 +529,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
