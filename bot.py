@@ -193,7 +193,8 @@ def estrai_statistiche(testo):
     
     df_match = re.search(r'(\d+)\s+Doppi falli\s+(\d+)', testo, re.IGNORECASE)
     doppi_falli = [int(df_match.group(1)), int(df_match.group(2))] if df_match else [0, 0]
-    
+    br1, br2 = "0/0", "0/0" # per evitare conflitti in caso di 1 giocatore mancante
+
     for el in testo.lower().split("\n"):
         if "break point" in el:
             br1 = el.split("break point")[0].replace(" ", "")
@@ -226,8 +227,9 @@ def processa_match(testo_match, lista_tennisti):
     ace, doppi_falli, break_point = estrai_statistiche(testo_match)
     
     risultati = []
-    
-    for idx, giocatore in enumerate(giocatori):
+    giocatori_validi = [g for g in giocatori if g is not None]
+
+    for idx, giocatore in enumerate(giocatori_validi):
         if idx == 0:
             game_player = game_g1
             game_avversario = game_g2
@@ -444,26 +446,25 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 parse_mode="Markdown"
             )
         else:
-            continue
-            # g1, g2 = giocatori_trovati
-            # stats1 = df_match[df_match['Giocatore'] == g1].iloc[0]
-            # stats2 = df_match[df_match['Giocatore'] == g2].iloc[0]
+            g1, g2 = giocatori_trovati
+            stats1 = df_match[df_match['Giocatore'] == g1].iloc[0]
+            stats2 = df_match[df_match['Giocatore'] == g2].iloc[0]
         
-            # await update.message.reply_text(
-            #     f"✅ *Match salvato con successo!*\n\n"
-            #     f"🎾 *{g1.upper()}*\n"
-            #     f"   • Game: {stats1['TOT GAME PLAYER']}\n"
-            #     f"   • Ace: {stats1['ACE']}\n"
-            #     f"   • DF: {stats1['DF']}\n"
-            #     f"   • Handicap: {stats1['HND']:+d}\n\n"
-            #     f"🎾 *{g2.upper()}*\n"
-            #     f"   • Game: {stats2['TOT GAME PLAYER']}\n"
-            #     f"   • Ace: {stats2['ACE']}\n"
-            #     f"   • DF: {stats2['DF']}\n"
-            #     f"   • Handicap: {stats2['HND']:+d}\n\n"
-            #     f"💾 Database aggiornato!",
-            #     parse_mode="Markdown"
-            # )
+            await update.message.reply_text(
+                f"✅ *Match salvato con successo!*\n\n"
+                f"🎾 *{g1.upper()}*\n"
+                f"   • Game: {stats1['TOT GAME PLAYER']}\n"
+                f"   • Ace: {stats1['ACE']}\n"
+                f"   • DF: {stats1['DF']}\n"
+                f"   • Handicap: {stats1['HND']:+d}\n\n"
+                f"🎾 *{g2.upper()}*\n"
+                f"   • Game: {stats2['TOT GAME PLAYER']}\n"
+                f"   • Ace: {stats2['ACE']}\n"
+                f"   • DF: {stats2['DF']}\n"
+                f"   • Handicap: {stats2['HND']:+d}\n\n"
+                f"💾 Database aggiornato!",
+                parse_mode="Markdown"
+            )
 
         
         # Salva in Excel
@@ -482,25 +483,28 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         #     )
         #     return
         
-        g1, g2 = giocatori
-        stats1 = df_match[df_match['Giocatore'] == g1].iloc[0]
-        stats2 = df_match[df_match['Giocatore'] == g2].iloc[0]
+        giocatori_trovati = df_match["Giocatore"].tolist()
         
-        await update.message.reply_text(
-            f"✅ *Match salvato con successo!*\n\n"
-            f"🎾 *{g1.upper()}*\n"
-            f"   • Game: {stats1['TOT GAME PLAYER']}\n"
-            f"   • Ace: {stats1['ACE']}\n"
-            f"   • DF: {stats1['DF']}\n"
-            f"   • Handicap: {stats1['HND']:+d}\n\n"
-            f"🎾 *{g2.upper()}*\n"
-            f"   • Game: {stats2['TOT GAME PLAYER']}\n"
-            f"   • Ace: {stats2['ACE']}\n"
-            f"   • DF: {stats2['DF']}\n"
-            f"   • Handicap: {stats2['HND']:+d}\n\n"
-            f"💾 Database aggiornato!",
-            parse_mode='Markdown'
-        )
+        if len(giocatori_trovati) == 2:
+            g1, g2 = giocatori_trovati
+            stats1 = df_match[df_match['Giocatore'] == g1].iloc[0]
+            stats2 = df_match[df_match['Giocatore'] == g2].iloc[0]
+        
+            await update.message.reply_text(
+                f"✅ *Match salvato con successo!*\n\n"
+                f"🎾 *{g1.upper()}*\n"
+                f"   • Game: {stats1['TOT GAME PLAYER']}\n"
+                f"   • Ace: {stats1['ACE']}\n"
+                f"   • DF: {stats1['DF']}\n"
+                f"   • Handicap: {stats1['HND']:+d}\n\n"
+                f"🎾 *{g2.upper()}*\n"
+                f"   • Game: {stats2['TOT GAME PLAYER']}\n"
+                f"   • Ace: {stats2['ACE']}\n"
+                f"   • DF: {stats2['DF']}\n"
+                f"   • Handicap: {stats2['HND']:+d}\n\n"
+                f"💾 Database aggiornato!",
+                parse_mode="Markdown"
+            )
         
         # Cleanup
         os.remove(photo_path)
@@ -547,6 +551,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
