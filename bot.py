@@ -427,7 +427,7 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
             text = pytesseract.image_to_string(
                 img,
                 lang="ita+eng",
-                config="--oem 3 --psm 11 -c tessedit_char_blacklist=|[]{}©"  #"--psm 6"
+                config="--oem 3 --psm 6 -c tessedit_char_blacklist=|[]{}©"  #"--psm 6"
             )
             text = separa_maiuscole(text)
             print("DEBUG: OCR completato")
@@ -566,6 +566,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
