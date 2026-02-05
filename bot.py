@@ -242,7 +242,7 @@ def processa_match(testo_match, lista_tennisti):
     nomi_trovati = re.findall(pattern_nomi, testo_match)
     nomi_candidati = [n.lower() for n in nomi_trovati if len(n) > 3]
 
-    trovati = trova_cognome_nella_lista(nomi_candidati)
+    trovati = trova_cognome_nella_lista(player_surname, nomi_candidati)
 
     if len(trovati) == 0:
         return None
@@ -566,6 +566,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
