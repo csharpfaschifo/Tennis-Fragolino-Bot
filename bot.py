@@ -238,7 +238,7 @@ async def scrittura_in_excel(df_match, update):
     df_match = df_match.rename(columns={
         "Giocatore": "GIOCATORE"
     })
-    df_match_excel = df_match[df_match["Giocatore"] != "NON_RICONOSCIUTO"]
+    df_match_excel = df_match[df_match["GIOCATORE"] != "NON_RICONOSCIUTO"]
 
     colonne_finali = [
         "GIOCATORE",
@@ -397,7 +397,7 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("⚙️ Processamento dati...")
         df_match = processa_match(text, player_surname)
 
-        await update.message.reply_text(f"testo: {text}")
+        #await update.message.reply_text(f"testo: {text}")
         if df_match is None or len(df_match) == 0:
             await update.message.reply_text("❌ Non sono riuscito a identificare i giocatori. Riprova con un'immagine più chiara.")
             return
@@ -523,6 +523,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
