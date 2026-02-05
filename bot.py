@@ -293,7 +293,8 @@ def processa_match(testo_match, lista_tennisti):
     else:
         giocatori = trovati[:2]
 
-    game_g1, game_g2 = estrai_game_da_testo(testo_match, giocatori)
+    # game_g1, game_g2 = estrai_game_da_testo(testo_match, giocatori)
+    game_g1, game_g2 = estrai_game_da_testo(testo_match)
     ace, doppi_falli, break_point = estrai_statistiche(testo_match)
 
     risultati = []
@@ -609,6 +610,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
