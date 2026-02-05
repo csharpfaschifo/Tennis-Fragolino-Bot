@@ -194,32 +194,66 @@ def trova_cognome_nella_lista(lista_tennisti, candidati):
 
     return trovati
 
-def estrai_game_da_testo(testo, giocatori):
-    testo = testo.lower()
-    righe = testo.split("\n")
+# def estrai_game_da_testo(testo, giocatori):
+#     testo = testo.lower()
+#     righe = testo.split("\n")
 
-    g1 = normalizza_nome(giocatori[0])
-    g2 = normalizza_nome(giocatori[1]) if giocatori[1] != "NON_RICONOSCIUTO" else None
+#     g1 = normalizza_nome(giocatori[0]) if giocatori[0] != "NON_RICONOSCIUTO" else None
+#     g2 = normalizza_nome(giocatori[1]) if giocatori[1] != "NON_RICONOSCIUTO" else None
 
-    game_g1, game_g2 = [], []
+#     game_g1, game_g2 = [], []
 
-    for riga in righe:
-        riga_norm = normalizza_nome(riga)
-        numeri = list(map(int, re.findall(r'\d+', riga)))
+#     for riga in righe:
+#         riga_norm = normalizza_nome(riga)
+#         numeri = list(map(int, re.findall(r'\d+', riga)))
 
-        # if g1 and g1 in riga_norm:
-        #     game_g1 = numeri
-        # elif g2 and g2 in riga_norm:
-        #     game_g2 = numeri
-        if not numeri:
+#         # if g1 and g1 in riga_norm:
+#         #     game_g1 = numeri
+#         # elif g2 and g2 in riga_norm:
+#         #     game_g2 = numeri
+#         if not numeri:
+#             continue
+
+#         if g1 and similarita(riga_norm, g1) > 0.7:
+#             game_g1 = numeri
+#         elif g2 and similarita(riga_norm, g2) > 0.7:
+#             game_g2 = numeri
+
+#     return game_g1, game_g2
+
+def estrai_game_da_testo(testo: str):
+    """
+    Estrae i game dalle prime righe del tabellino.
+    Usa SOLO i numeri interi FINALI delle righe.
+    """
+    righe = [r.strip() for r in testo.split("\n") if r.strip()]
+    righe_utili = righe[:5]  # guardiamo solo le prime righe
+
+    risultati = []
+
+    for riga in righe_utili:
+        # trova SOLO numeri alla fine della riga
+        match = re.search(r'(\d+(?:\s+\d+)*)$', riga)
+        if not match:
             continue
 
-        if g1 and similarita(riga_norm, g1) > 0.7:
-            game_g1 = numeri
-        elif g2 and similarita(riga_norm, g2) > 0.7:
-            game_g2 = numeri
+        numeri = list(map(int, match.group(1).split()))
 
-    return game_g1, game_g2
+        # scarta righe tipo "10 Ace 5"
+        if len(numeri) >= 2:
+            risultati.append(numeri)
+
+        if len(risultati) == 2:
+            break
+
+    # padding di sicurezza
+    if len(risultati) == 1:
+        risultati.append([])
+
+    if len(risultati) == 0:
+        return [], []
+
+    return risultati[0], risultati[1]
 
 def calcola_tie_break(game_g1, game_g2): 
     tie_breaks = 0 
@@ -327,7 +361,8 @@ async def scrittura_in_excel(df_match, update):
         kind="stable"
         )
     
-    temp_path = EXCEL_LOCAL_PATH + ".tmp"
+    base, ext = os.path.splitext(EXCEL_LOCAL_PATH)
+    temp_path = base + "_tmp" + ext
     
     with pd.ExcelWriter(
         temp_path,
@@ -574,6 +609,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
