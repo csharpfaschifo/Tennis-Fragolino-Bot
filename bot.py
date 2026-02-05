@@ -190,7 +190,7 @@ def trova_cognome_nella_lista(lista_tennisti, candidati):
             break
     
     if len(trovati) == 1: # se ne trovi solo uno → avversario non riconosciuto
-        trovati.append("__AVVERSARIO__")
+        trovati.append("NON_RICONOSCIUTO")
 
     return trovati
 
@@ -207,9 +207,16 @@ def estrai_game_da_testo(testo, giocatori):
         riga_norm = normalizza_nome(riga)
         numeri = list(map(int, re.findall(r'\d+', riga)))
 
-        if g1 and g1 in riga_norm:
+        # if g1 and g1 in riga_norm:
+        #     game_g1 = numeri
+        # elif g2 and g2 in riga_norm:
+        #     game_g2 = numeri
+        if not numeri:
+            continue
+
+        if g1 and similarita(riga_norm, g1) > 0.7:
             game_g1 = numeri
-        elif g2 and g2 in riga_norm:
+        elif g2 and similarita(riga_norm, g2) > 0.7:
             game_g2 = numeri
 
     return game_g1, game_g2
@@ -318,13 +325,13 @@ async def scrittura_in_excel(df_match, update):
         by="GIOCATORE",
         ascending=True,
         kind="stable"
-    )
-
+        )
+    
+    temp_path = EXCEL_LOCAL_PATH + ".tmp"
+    
     with pd.ExcelWriter(
-        EXCEL_LOCAL_PATH,
-        engine="openpyxl",
-        mode="a",
-        if_sheet_exists="replace"
+        temp_path,
+        engine="openpyxl"
     ) as writer:
         pd.read_excel(EXCEL_LOCAL_PATH, sheet_name="Indice").to_excel(
             writer, sheet_name="Indice", index=False
@@ -332,6 +339,9 @@ async def scrittura_in_excel(df_match, update):
         df_aggiornato.to_excel(
             writer, sheet_name="Statistiche", index=False
         )
+    
+    # SOLO SE ARRIVA QUI → rimpiazza
+    os.replace(temp_path, EXCEL_LOCAL_PATH)
 
 # ============================================================================
 # GOOGLE DRIVE FUNCTIONS
@@ -564,6 +574,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
