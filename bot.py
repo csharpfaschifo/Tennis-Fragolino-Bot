@@ -127,6 +127,8 @@ def trova_cognome_nella_lista(lista_tennisti, candidati):
     return l
 
 def estrai_game_da_testo(testo, giocatori):
+    if giocatori[1] is None:
+        return [], []
     if "vento" in testo.lower():
         sezione_punteggi = testo.split("vento")[1][:60].lower()
     else:
@@ -166,8 +168,11 @@ def processa_match(testo_match, lista_tennisti):
     
     giocatori = trova_cognome_nella_lista(lista_tennisti, nomi_candidati)
     
-    if len(giocatori) < 2:
+    if len(giocatori) == 0:
         return None
+    
+    if len(giocatori) == 1:
+        giocatori.append(None)
     
     game = estrai_game_da_testo(testo_match, giocatori)
     game_g1 = game[0]
@@ -247,6 +252,13 @@ async def scrittura_in_excel(df_match, update):
     df_aggiornato = pd.concat(
         [df_esistente, df_match],
         ignore_index=True
+    )
+    
+    # ORDINA PER NOME GIOCATORE
+    df_aggiornato = df_aggiornato.sort_values(
+        by="GIOCATORE",
+        ascending=True,
+        kind="stable"
     )
 
     with pd.ExcelWriter(
@@ -369,7 +381,43 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if df_match is None or len(df_match) == 0:
             await update.message.reply_text("❌ Non sono riuscito a identificare i giocatori. Riprova con un'immagine più chiara.")
             return
-        giocatori = df_match["Giocatore"].tolist()
+        giocatori_trovati = df_match["Giocatore"].tolist()
+
+        if len(giocatori_trovati) == 1:
+            g1 = giocatori_trovati[0]
+            stats1 = df_match.iloc[0]
+        
+            await update.message.reply_text(
+                f"✅ *Match salvato (parziale)*\n\n"
+                f"🎾 *{g1.upper()}*\n"
+                f"   • Game: {stats1['TOT GAME PLAYER']}\n"
+                f"   • Ace: {stats1['ACE']}\n"
+                f"   • DF: {stats1['DF']}\n"
+                f"   • Handicap: {stats1['HND']:+d}\n\n"
+                f"⚠️ Altro giocatore NON RICONOSCIUTO",
+                parse_mode="Markdown"
+            )
+        else:
+            g1, g2 = giocatori_trovati
+            stats1 = df_match[df_match['Giocatore'] == g1].iloc[0]
+            stats2 = df_match[df_match['Giocatore'] == g2].iloc[0]
+        
+            await update.message.reply_text(
+                f"✅ *Match salvato con successo!*\n\n"
+                f"🎾 *{g1.upper()}*\n"
+                f"   • Game: {stats1['TOT GAME PLAYER']}\n"
+                f"   • Ace: {stats1['ACE']}\n"
+                f"   • DF: {stats1['DF']}\n"
+                f"   • Handicap: {stats1['HND']:+d}\n\n"
+                f"🎾 *{g2.upper()}*\n"
+                f"   • Game: {stats2['TOT GAME PLAYER']}\n"
+                f"   • Ace: {stats2['ACE']}\n"
+                f"   • DF: {stats2['DF']}\n"
+                f"   • Handicap: {stats2['HND']:+d}\n\n"
+                f"💾 Database aggiornato!",
+                parse_mode="Markdown"
+            )
+
         
         # Salva in Excel
         download_excel_from_drive()
@@ -381,11 +429,11 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         # Messaggio di conferma
         print("DEBUG: giocatori estratti =", giocatori)
         print("DEBUG: len(giocatori) =", len(giocatori))
-        if len(giocatori) != 2:
-            await update.message.reply_text(
-                f"❌ Numero giocatori non valido ({len(giocatori)}): {giocatori}"
-            )
-            return
+        # if len(giocatori) != 2:
+        #     await update.message.reply_text(
+        #         f"❌ Numero giocatori non valido ({len(giocatori)}): {giocatori}"
+        #     )
+        #     return
         
         g1, g2 = giocatori
         stats1 = df_match[df_match['Giocatore'] == g1].iloc[0]
@@ -409,12 +457,7 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         # Cleanup
         os.remove(photo_path)
-        
-        # except Exception:
-        #     await update.message.reply_text(
-        #         "❌ Errore durante il processamento:\n"
-        #         "tesseract is not installed or it's not in your PATH"
-        #     )
+        estrai_game_da_testo
     except Exception as e:
         await update.message.reply_text(
             f"❌ Errore durante il processamento:\n{type(e).__name__}: {e}"
@@ -457,15 +500,4 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-
-
-
-
-
-
-
-
-
 
