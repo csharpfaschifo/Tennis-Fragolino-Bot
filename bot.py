@@ -147,7 +147,9 @@ def trova_cognome_nella_lista(lista_tennisti, candidati):
     
             if cognome_reale not in trovati:
                 trovati.append(cognome_reale)
-    
+
+        if len(trovati) == 1:
+            giocatori.append("__AVVERSARIO__")    
         if len(trovati) == 2:
             break
     
@@ -181,9 +183,9 @@ def estrai_game_da_testo(testo, giocatori):
             if numeri:
                 game_g2 = list(map(int, numeri))
 
-    # ⚠️ Se non troviamo entrambi, NON CRASHIAMO
-    if not game_g1 or not game_g2:
-        return [], []
+    # # ⚠️ Se non troviamo entrambi, NON CRASHIAMO
+    # if not game_g1 or not game_g2:
+    #     return [], []
 
     return game_g1, game_g2
 
@@ -237,6 +239,10 @@ def processa_match(testo_match, lista_tennisti):
     giocatori_validi = [g for g in giocatori if g is not None]
 
     for idx, giocatore in enumerate(giocatori_validi):
+        nome_output = (
+            giocatore if giocatore != "__AVVERSARIO__"
+            else "AVVERSARIO NON RICONOSCIUTO"
+        )
         if idx == 0:
             game_player = game_g1
             game_avversario = game_g2
@@ -256,7 +262,7 @@ def processa_match(testo_match, lista_tennisti):
         tie_break = calcola_tie_break(game_g1, game_g2)
         
         risultati.append({
-            'Giocatore': giocatore,
+            'Giocatore': nome_output,
             'TOT GAME': tot_game,
             'TOT GAME PLAYER': tot_game_player,
             'DF': df_player,
@@ -274,6 +280,7 @@ async def scrittura_in_excel(df_match, update):
     df_match = df_match.rename(columns={
         "Giocatore": "GIOCATORE"
     })
+    df_match = df_match[df_match["GIOCATORE"] != "AVVERSARIO NON RICONOSCIUTO"]
 
     colonne_finali = [
         "GIOCATORE",
@@ -558,6 +565,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
