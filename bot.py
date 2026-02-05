@@ -223,30 +223,42 @@ def trova_cognome_nella_lista(lista_tennisti, candidati):
 
 def estrai_game_da_testo(testo: str):
     """
-    Estrae i game dalle prime righe del tabellino.
-    Usa SOLO i numeri interi FINALI delle righe.
+    Estrae i game dai punteggi del match leggendo SOLO
+    i numeri FINALI delle righe-score.
     """
     righe = [r.strip() for r in testo.split("\n") if r.strip()]
-    righe_utili = righe[:4]  # guardiamo solo le prime righe
 
     risultati = []
 
-    for riga in righe_utili:
-        # trova SOLO numeri alla fine della riga
-        match = re.search(r'(\d+(?:\s+\d+)*)$', re.sub(r"[<\>\@\#\[\]\(\)\«\»]", "", riga))
+    for riga in righe:
+        riga_pulita = re.sub(r"[^\w\s]", " ", riga).lower()
+
+        # scarta righe statistiche
+        if any(k in riga_pulita for k in [
+            "ace", "doppi", "falli", "%", "break", "tiebreak"
+        ]):
+            continue
+
+        # match SOLO numeri alla fine
+        match = re.search(r'(\d+(?:\s+\d+)*)\s*$', riga_pulita)
         if not match:
             continue
 
         numeri = list(map(int, match.group(1).split()))
 
-        # scarta righe tipo "10 Ace 5"
-        if len(numeri) >= 2:
-            risultati.append(numeri)
+        # devono essere almeno 2 e plausibili per tennis
+        if len(numeri) < 2:
+            continue
+
+        if any(n > 7 for n in numeri):
+            continue
+
+        risultati.append(numeri)
 
         if len(risultati) == 2:
             break
 
-    # padding di sicurezza
+    # fallback sicuro
     if len(risultati) == 1:
         risultati.append([])
 
@@ -254,13 +266,6 @@ def estrai_game_da_testo(testo: str):
         return [], []
 
     return risultati[0], risultati[1]
-
-def calcola_tie_break(game_g1, game_g2): 
-    tie_breaks = 0 
-    for g1, g2 in zip(game_g1, game_g2):
-        if g1 + g2 >= 13: 
-            tie_breaks += 1 
-    return tie_breaks
 
 def estrai_statistiche(testo):
     ace_match = re.search(r'(\d+)\s+Ace\s+(\d+)', testo, re.IGNORECASE)
@@ -610,6 +615,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
