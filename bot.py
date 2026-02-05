@@ -17,6 +17,7 @@ from google.oauth2 import service_account
 from googleapiclient.http import MediaFileUpload
 import json
 import traceback
+from difflib import SequenceMatcher
 from googleapiclient.http import MediaIoBaseDownload
 import io
 import shutil
@@ -136,19 +137,60 @@ def gray_scale_img(img):
 # FUNZIONI DI ESTRAZIONE DATI (dal tuo notebook)
 # ============================================================================
 
-def trova_cognome_nella_lista(candidati):
+def separa_maiuscole(testo: str) -> str:
+    """
+    Inserisce uno spazio prima di ogni lettera maiuscola
+    quando è attaccata a una minuscola (HamadMededovic).
+    """
+    testo = re.sub(r'([a-zà-ž])([A-ZÀ-Ž])', r'\1 \2', testo)
+    return testo
+
+def similarita(a: str, b: str) -> float:
+    return SequenceMatcher(None, a, b).ratio()
+
+def trova_cognome_nella_lista(lista_tennisti, candidati):
     trovati = []
+    usati = set()
 
     for nome in candidati:
         nome_norm = normalizza_nome(nome)
 
-        if nome_norm in mappa_cognomi:
-            cognome_reale = mappa_cognomi[nome_norm]
-            if cognome_reale not in trovati:
-                trovati.append(cognome_reale)
+        if len(nome_norm) < 5:
+            continue
+
+        miglior_match = None
+        miglior_score = 0.0
+
+        for cognome_norm, cognome_reale in mappa_cognomi.items():
+            if cognome_reale in usati:
+                continue
+
+            # MATCH ESATTO
+            if nome_norm == cognome_norm:
+                miglior_match = cognome_reale
+                miglior_score = 1.0
+                break
+
+            # MATCH PARZIALE
+            if nome_norm in cognome_norm or cognome_norm in nome_norm:
+                score = 0.9
+            else:
+                score = similarita(nome_norm, cognome_norm)
+
+            if score > miglior_score:
+                miglior_score = score
+                miglior_match = cognome_reale
+
+        # soglia di sicurezza
+        if miglior_score >= 0.82 and miglior_match:
+            trovati.append(miglior_match)
+            usati.add(miglior_match)
 
         if len(trovati) == 2:
             break
+    
+    if len(trovati) == 1: # se ne trovi solo uno → avversario non riconosciuto
+        trovati.append("__AVVERSARIO__")
 
     return trovati
 
@@ -385,8 +427,9 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
             text = pytesseract.image_to_string(
                 img,
                 lang="ita+eng",
-                config="--psm 6"
+                config="--oem 3 --psm 11 -c tessedit_char_blacklist=|[]{}©"  #"--psm 6"
             )
+            text = separa_maiuscole(text)
             print("DEBUG: OCR completato")
         except Exception as e:
             print("❌ ERRORE DURANTE OCR")
@@ -523,6 +566,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
