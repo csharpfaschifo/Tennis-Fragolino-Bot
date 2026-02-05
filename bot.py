@@ -154,24 +154,38 @@ def trova_cognome_nella_lista(lista_tennisti, candidati):
     return trovati
 
 def estrai_game_da_testo(testo, giocatori):
+    # Caso 1 solo giocatore
     if giocatori[1] is None:
         return [], []
-    if "vento" in testo.lower():
-        sezione_punteggi = testo.split("vento")[1][:60].lower()
-    else:
-        sezione_punteggi = testo[0:100].lower() # Modificato da 50:100
-    
-    digit1 = [el.split(f"{giocatori[0]}")[1] for el in sezione_punteggi.split("\n") if giocatori[0] in el]
-    digit2 = [el.split(f"{giocatori[1]}")[1] for el in sezione_punteggi.split("\n") if giocatori[1] in el]
-    
-    return list(map(int, re.findall(r'\d+', digit1[0]))), list(map(int, re.findall(r'\d+', digit2[0])))
 
-def calcola_tie_break(game_g1, game_g2):
-    tie_breaks = 0
-    for g1, g2 in zip(game_g1, game_g2):
-        if g1 + g2 >= 13:
-            tie_breaks += 1
-    return tie_breaks
+    testo = testo.lower()
+
+    g1 = normalizza_nome(giocatori[0])
+    g2 = normalizza_nome(giocatori[1])
+
+    righe = testo.split("\n")
+
+    game_g1 = []
+    game_g2 = []
+
+    for riga in righe:
+        riga_norm = normalizza_nome(riga)
+
+        if g1 in riga_norm:
+            numeri = re.findall(r'\d+', riga)
+            if numeri:
+                game_g1 = list(map(int, numeri))
+
+        if g2 in riga_norm:
+            numeri = re.findall(r'\d+', riga)
+            if numeri:
+                game_g2 = list(map(int, numeri))
+
+    # ⚠️ Se non troviamo entrambi, NON CRASHIAMO
+    if not game_g1 or not game_g2:
+        return [], []
+
+    return game_g1, game_g2
 
 def estrai_statistiche(testo):
     ace_match = re.search(r'(\d+)\s+Ace\s+(\d+)', testo, re.IGNORECASE)
@@ -205,6 +219,10 @@ def processa_match(testo_match, lista_tennisti):
     game_g1 = game[0]
     game_g2 = game[1]
     
+    if not game_g1 or not game_g2:
+        game_g1 = []
+        game_g2 = []
+        
     ace, doppi_falli, break_point = estrai_statistiche(testo_match)
     
     risultati = []
@@ -426,25 +444,25 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 parse_mode="Markdown"
             )
         else:
-            g1, g2 = giocatori_trovati
-            stats1 = df_match[df_match['Giocatore'] == g1].iloc[0]
-            stats2 = df_match[df_match['Giocatore'] == g2].iloc[0]
+            # g1, g2 = giocatori_trovati
+            # stats1 = df_match[df_match['Giocatore'] == g1].iloc[0]
+            # stats2 = df_match[df_match['Giocatore'] == g2].iloc[0]
         
-            await update.message.reply_text(
-                f"✅ *Match salvato con successo!*\n\n"
-                f"🎾 *{g1.upper()}*\n"
-                f"   • Game: {stats1['TOT GAME PLAYER']}\n"
-                f"   • Ace: {stats1['ACE']}\n"
-                f"   • DF: {stats1['DF']}\n"
-                f"   • Handicap: {stats1['HND']:+d}\n\n"
-                f"🎾 *{g2.upper()}*\n"
-                f"   • Game: {stats2['TOT GAME PLAYER']}\n"
-                f"   • Ace: {stats2['ACE']}\n"
-                f"   • DF: {stats2['DF']}\n"
-                f"   • Handicap: {stats2['HND']:+d}\n\n"
-                f"💾 Database aggiornato!",
-                parse_mode="Markdown"
-            )
+            # await update.message.reply_text(
+            #     f"✅ *Match salvato con successo!*\n\n"
+            #     f"🎾 *{g1.upper()}*\n"
+            #     f"   • Game: {stats1['TOT GAME PLAYER']}\n"
+            #     f"   • Ace: {stats1['ACE']}\n"
+            #     f"   • DF: {stats1['DF']}\n"
+            #     f"   • Handicap: {stats1['HND']:+d}\n\n"
+            #     f"🎾 *{g2.upper()}*\n"
+            #     f"   • Game: {stats2['TOT GAME PLAYER']}\n"
+            #     f"   • Ace: {stats2['ACE']}\n"
+            #     f"   • DF: {stats2['DF']}\n"
+            #     f"   • Handicap: {stats2['HND']:+d}\n\n"
+            #     f"💾 Database aggiornato!",
+            #     parse_mode="Markdown"
+            # )
 
         
         # Salva in Excel
@@ -528,6 +546,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
