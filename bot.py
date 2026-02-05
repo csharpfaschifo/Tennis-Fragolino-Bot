@@ -306,8 +306,6 @@ async def scrittura_in_excel(df_match, update):
         return
 
     # File esiste → append su Statistiche
-    await update.message.reply_text("📊 Aggiorno Statistiche")
-
     df_esistente = pd.read_excel(EXCEL_LOCAL_PATH, sheet_name="Statistiche")
 
     df_aggiornato = pd.concat(
@@ -427,7 +425,7 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
             text = pytesseract.image_to_string(
                 img,
                 lang="ita+eng",
-                config="--oem 3 --psm 6 -c tessedit_char_blacklist=|[]{}©"  #"--psm 6"
+                config="--oem 3 --psm 6"  #"--psm 6"
             )
             text = separa_maiuscole(text)
             print("DEBUG: OCR completato")
@@ -566,6 +564,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
