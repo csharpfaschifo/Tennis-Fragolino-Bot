@@ -187,6 +187,13 @@ def estrai_game_da_testo(testo, giocatori):
 
     return game_g1, game_g2
 
+def calcola_tie_break(game_g1, game_g2): 
+    tie_breaks = 0 
+    for g1, g2 in zip(game_g1, game_g2):
+        if g1 + g2 >= 13: 
+            tie_breaks += 1 
+    return tie_breaks
+
 def estrai_statistiche(testo):
     ace_match = re.search(r'(\d+)\s+Ace\s+(\d+)', testo, re.IGNORECASE)
     ace = [int(ace_match.group(1)), int(ace_match.group(2))] if ace_match else [0, 0]
@@ -551,6 +558,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
