@@ -238,7 +238,7 @@ async def scrittura_in_excel(df_match, update):
     df_match = df_match.rename(columns={
         "Giocatore": "GIOCATORE"
     })
-    df_match_excel = df_match[df_match["GIOCATORE"] != "NON_RICONOSCIUTO"]
+    df_match = df_match[df_match["GIOCATORE"] != "NON_RICONOSCIUTO"]
 
     colonne_finali = [
         "GIOCATORE",
@@ -523,6 +523,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
