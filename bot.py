@@ -93,6 +93,22 @@ tennisti = [
 
 player_surname = [x.split()[-1].lower() for x in tennisti]
 # Mappa: cognome_normalizzato → cognome_originale
+def normalizza_nome(nome: str) -> str:
+    if not nome:
+        return ""
+
+    # 1. lowercase
+    nome = nome.lower()
+
+    # 2. decomposizione unicode (accenti → lettere base)
+    nome = unicodedata.normalize("NFKD", nome)
+    nome = "".join(c for c in nome if not unicodedata.combining(c))
+
+    # 3. rimuove tutto ciò che non è lettera
+    nome = re.sub(r"[^a-z]", "", nome)
+
+    return nome
+    
 mappa_cognomi = {
     normalizza_nome(cognome): cognome
     for cognome in player_surname
@@ -136,24 +152,6 @@ def trova_cognome_nella_lista(lista_tennisti, candidati):
             break
     
     return trovati
-
-
-
-def normalizza_nome(nome: str) -> str:
-    if not nome:
-        return ""
-
-    # 1. lowercase
-    nome = nome.lower()
-
-    # 2. decomposizione unicode (accenti → lettere base)
-    nome = unicodedata.normalize("NFKD", nome)
-    nome = "".join(c for c in nome if not unicodedata.combining(c))
-
-    # 3. rimuove tutto ciò che non è lettera
-    nome = re.sub(r"[^a-z]", "", nome)
-
-    return nome
 
 def estrai_game_da_testo(testo, giocatori):
     if giocatori[1] is None:
@@ -530,6 +528,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
