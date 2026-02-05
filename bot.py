@@ -136,56 +136,39 @@ def gray_scale_img(img):
 # FUNZIONI DI ESTRAZIONE DATI (dal tuo notebook)
 # ============================================================================
 
-def trova_cognome_nella_lista(lista_tennisti, candidati):
+def trova_cognome_nella_lista(candidati):
     trovati = []
-    
+
     for nome in candidati:
         nome_norm = normalizza_nome(nome)
-    
+
         if nome_norm in mappa_cognomi:
             cognome_reale = mappa_cognomi[nome_norm]
-    
             if cognome_reale not in trovati:
                 trovati.append(cognome_reale)
 
-        if len(trovati) == 1:
-            giocatori.append("__AVVERSARIO__")    
         if len(trovati) == 2:
             break
-    
+
     return trovati
 
 def estrai_game_da_testo(testo, giocatori):
-    # Caso 1 solo giocatore
-    if giocatori[1] is None:
-        return [], []
-
     testo = testo.lower()
-
-    g1 = normalizza_nome(giocatori[0])
-    g2 = normalizza_nome(giocatori[1])
-
     righe = testo.split("\n")
 
-    game_g1 = []
-    game_g2 = []
+    g1 = normalizza_nome(giocatori[0])
+    g2 = normalizza_nome(giocatori[1]) if giocatori[1] != "NON_RICONOSCIUTO" else None
+
+    game_g1, game_g2 = [], []
 
     for riga in righe:
         riga_norm = normalizza_nome(riga)
+        numeri = list(map(int, re.findall(r'\d+', riga)))
 
-        if g1 in riga_norm:
-            numeri = re.findall(r'\d+', riga)
-            if numeri:
-                game_g1 = list(map(int, numeri))
-
-        if g2 in riga_norm:
-            numeri = re.findall(r'\d+', riga)
-            if numeri:
-                game_g2 = list(map(int, numeri))
-
-    # # ⚠️ Se non troviamo entrambi, NON CRASHIAMO
-    # if not game_g1 or not game_g2:
-    #     return [], []
+        if g1 and g1 in riga_norm:
+            game_g1 = numeri
+        elif g2 and g2 in riga_norm:
+            game_g2 = numeri
 
     return game_g1, game_g2
 
@@ -216,63 +199,38 @@ def processa_match(testo_match, lista_tennisti):
     pattern_nomi = r'\b\w+\b'
     nomi_trovati = re.findall(pattern_nomi, testo_match)
     nomi_candidati = [n.lower() for n in nomi_trovati if len(n) > 3]
-    
-    giocatori = trova_cognome_nella_lista(lista_tennisti, nomi_candidati)
-    
-    if len(giocatori) == 0:
-        return None
-    
-    if len(giocatori) == 1:
-        giocatori.append(None)
-    
-    game = estrai_game_da_testo(testo_match, giocatori)
-    game_g1 = game[0]
-    game_g2 = game[1]
-    
-    if not game_g1 or not game_g2:
-        game_g1 = []
-        game_g2 = []
-        
-    ace, doppi_falli, break_point = estrai_statistiche(testo_match)
-    
-    risultati = []
-    giocatori_validi = [g for g in giocatori if g is not None]
 
-    for idx, giocatore in enumerate(giocatori_validi):
-        nome_output = (
-            giocatore if giocatore != "__AVVERSARIO__"
-            else "AVVERSARIO NON RICONOSCIUTO"
-        )
-        if idx == 0:
-            game_player = game_g1
-            game_avversario = game_g2
-            ace_player = ace[0]
-            df_player = doppi_falli[0]
-            bp_avversario = break_point[1]
-        else:
-            game_player = game_g2
-            game_avversario = game_g1
-            ace_player = ace[1]
-            df_player = doppi_falli[1]
-            bp_avversario = break_point[0]
-        
-        tot_game = sum(game_g1) + sum(game_g2)
-        tot_game_player = sum(game_player)
-        hnd = sum(game_player) - sum(game_avversario)
-        tie_break = calcola_tie_break(game_g1, game_g2)
-        
+    trovati = trova_cognome_nella_lista(nomi_candidati)
+
+    if len(trovati) == 0:
+        return None
+
+    if len(trovati) == 1:
+        giocatori = [trovati[0], "NON_RICONOSCIUTO"]
+    else:
+        giocatori = trovati[:2]
+
+    game_g1, game_g2 = estrai_game_da_testo(testo_match, giocatori)
+    ace, doppi_falli, break_point = estrai_statistiche(testo_match)
+
+    risultati = []
+
+    for idx, giocatore in enumerate(giocatori):
+        game_player = game_g1 if idx == 0 else game_g2
+        game_avv = game_g2 if idx == 0 else game_g1
+
         risultati.append({
-            'Giocatore': nome_output,
-            'TOT GAME': tot_game,
-            'TOT GAME PLAYER': tot_game_player,
-            'DF': df_player,
-            'BREAK': bp_avversario,
-            'ACE': ace_player,
-            'HND': hnd,
-            'TIE BREAK': tie_break,
-            'TORNEO': "Montpellier ATP"
+            "Giocatore": giocatore,
+            "TOT GAME": sum(game_g1) + sum(game_g2),
+            "TOT GAME PLAYER": sum(game_player),
+            "DF": doppi_falli[idx],
+            "BREAK": break_point[1 - idx],
+            "ACE": ace[idx],
+            "HND": sum(game_player) - sum(game_avv),
+            "TIE BREAK": calcola_tie_break(game_g1, game_g2),
+            "TORNEO": "Montpellier ATP"
         })
-    
+
     return pd.DataFrame(risultati)
 
 async def scrittura_in_excel(df_match, update):
@@ -280,7 +238,7 @@ async def scrittura_in_excel(df_match, update):
     df_match = df_match.rename(columns={
         "Giocatore": "GIOCATORE"
     })
-    df_match = df_match[df_match["GIOCATORE"] != "AVVERSARIO NON RICONOSCIUTO"]
+    df_match_excel = df_match[df_match["Giocatore"] != "NON_RICONOSCIUTO"]
 
     colonne_finali = [
         "GIOCATORE",
@@ -565,6 +523,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
