@@ -444,6 +444,7 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 parse_mode="Markdown"
             )
         else:
+            continue
             # g1, g2 = giocatori_trovati
             # stats1 = df_match[df_match['Giocatore'] == g1].iloc[0]
             # stats2 = df_match[df_match['Giocatore'] == g2].iloc[0]
@@ -546,6 +547,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
