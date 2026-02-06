@@ -107,25 +107,24 @@ tennisti = [
     "Toufik Sahtali", "Fausto Tabacco", "Iannis Miletich", "Oscar Jose Gutierrez", "Wishaya Trongcharoenchaikul", "Ilya Ivashka", "Evgeny Karlovskiy", "Gustavo Ribeiro De Almeida", "Maximo Zeitune", "Linang Xiao",
     "Bautista Vilicich", "Martin Van Der Meerschen", "Amir Omarkhanov", "Pedro Araújo", "Albert Pedrico Kravtsov", "Marko Miladinović", "Pedro Rodenas", "Oliver Bonding", "Duck-hee Lee", "Shinji Hazawa",
     "Alejandro Juan Mano", "Artur Kukasian", "Evgenii Tiurnev", "Luca Preda", "Ajeet Rai", "Alan Magadan", "Joshua Charlton", "Taiyo Yamanaka", "Egor Gerasimov", "Petros Tsitsipas",
-    "Yannik Kelm", "Jorge Plans", "Maximilian Homberg", "Michel Hopp", "Izan Almazan Valiente", "Niccolo Catini", "Alexandre Aubriot", "Samir Hamza Reguig", "Martin Kližan", "Gian Luca Tanner",
-    "Matt Ponchet", "Pavel Lagutin", "Kristijan Juhas", "Alejandro Turriziani Álvarez", "Jeffrey Von Der Schulenburg", "Mikael Ymer", "Dong Ju Kim", "Arklon Huertas Del Pino Cordova", "Grégoire Barrère", "Julio César Porras",
-    "Rafael Izquierdo Luque", "Nikola Slavic", "Vincent Marysko", "Thiago Cigarran", "Jacob Brumm", "Patrick Schoen", "Hoyoung Roh", "Marc Van Der Merwe", "Scott Jones", "Xiaofei Wang",
-    "Ignacio Parisca Romera", "John Hallquist Lithen", "Amit Vales", "Taisei Ichikawa", "Luca Pow", "Luca Wiedenmann", "Peter Makk", "Andreja Petrovic", "Giorgio Tabacco", "Charlie Robertson",
-    "Ivan Nedelko", "Jumpei Yamasaki", "Lautaro Agustin Falabella", "Jakub Filip", "Mert Naci Türker", "Noah Schachter", "Manuel Plunger", "Emon Van Loben Sels", "Kalin Ivanovski", "Lorenzo Bocchi",
-    "Joao Victor Couto Loureiro", "Stefano D'Agostino", "Niklas Schell", "Seydina André", "Andrea Fiorentini", "Dragos Nicolae Cazacu", "Diego Schwartzman", "Thanasi Kokkinakis", "Nicolas Ian Kotzen", "Aoran Wang",
-    "Tiago Cação", "Micah Braswell", "Jack Kennedy", "Manish Sureshkumar", "Aleksandr Lobanov", "Daisuke Sumizawa", "Anas Mazdrashki", "Marko Maksimović", "Trey Hilderbrand", "Ilya Snițari",
-    "Samuel Vincent Ruggeri", "Shunsuke Nakagawa", "Tomas Serrano Luis", "Marcus Walters", "Nitin Kumar Sinha", "Alexander Klintcharov", "Finn Murgett", "Romain Faucon", "Ezekiel Clark", "Nicolas Jadoun",
-    "Matthew Forbes", "Theodore Dean", "Calvin Müller", "Anton Shepp", "Isaiah Strode", "Enzo Kohlmann De Freitas", "Lucas Bouquet", "Kasra Rahmani", "Marc Majdandzic", "Benjamin Pietri",
-    "Carles Hernández", "Nikolai Barsukov", "Nikita Mashtakov", "Kosuke Ogura", "Orlando Luz", "Paul Inchauspe", "Jacob Bradshaw", "Salvador Price", "Ryotaro Taguchi", "Yaojie Zeng",
-    "Fernando Cavallo", "Miles Jones", "Dev Javia", "Naoya Honda", "Evan Bynoe", "Jesse Delaney", "Zoran Ludoški", "Ryan Colby", "Rudy Quan", "Pablo Masjuan Ginel",
-    "Stijn Paardekooper", "Adan Freire Da Silva", "Nicolas Zanellato", "Lorenzo Angelini", "Mihai Razvan Marinescu", "Grigoriy Lomakin", "Steven Diez", "Spencer Johnson", "Yun seong Chung", "Juan Sebastian Osorio",
-    "Qian Sun", "Brian Bozemoj", "Younes Lalami", "Kristjan Tamm", "Pietro Marino", "Diego Fernandez Flores", "Michael Zhu", "David Pichler", "Johannes Ingildsen", "Ozan Baris",
-    "Taym Al Azmeh", "Oskar Brostrom Poulsen", "Jea Moon Lee", "Pietro Romeo Scomparin", "Thantub Suksumrarn", "Ewen Lumsden", "Justin Schlageter", "Gabriele Bosio", "Maxim Shin", "Ezequiel Monferrer",
-    "Jeremy Gschwendtner", "Axel Nefve", "Nicolás Barrientos", "Dante Pagani", "Ryo Tabata", "Benjamin Winter Lopez", "Joris De Loore", "Markus Malaszszak", "Karl Friberg", "Bekkhan Atlangeriev",
-    "Marcello Serafini", "Tomás Martínez", "Benjamin Thomas George", "Daniel Salazar", "Lorenzo Lorusso", "Finn Bass", "Nicolás Villalón", "Žiga Šeško", "Andrew Delgado", "Kuang Qing Xu",
-    "Aleksa Ćirić", "Mateo Barreiros Reyes", "Suk Hyun Choo", "Dominique Rolland", "Mathias Bourgue", "Gavin Young", "Kiranpal Pannu", "Alejo Lorenzo Lingua Lavallén", "Leonardo Aboian", "William Rejchtman Vinciguerra",
-    "Zach Stephens", "Enzo Wallart", "Peter Buldorini", "Tymur Bieldiugin", "Jesse Flores",
-    "Mikael Arseneault", "Chirag Duhan"
+    "Yannik Kelm", "Jorge Plans", "Maximilian Homberg", "Michel Hopp", "Izan Almazan Valiente", "Niccolo Catini", "Alexandre Aubriot", "Samir Hamza Reguig", "Martin Kližan", "Gian Luca Tanner"#,
+    # "Matt Ponchet", "Pavel Lagutin", "Kristijan Juhas", "Alejandro Turriziani Álvarez", "Jeffrey Von Der Schulenburg", "Mikael Ymer", "Dong Ju Kim", "Arklon Huertas Del Pino Cordova", "Grégoire Barrère", "Julio César Porras",
+    # "Rafael Izquierdo Luque", "Nikola Slavic", "Vincent Marysko", "Thiago Cigarran", "Jacob Brumm", "Patrick Schoen", "Hoyoung Roh", "Marc Van Der Merwe", "Scott Jones", "Xiaofei Wang",
+    # "Ignacio Parisca Romera", "John Hallquist Lithen", "Amit Vales", "Taisei Ichikawa", "Luca Pow", "Luca Wiedenmann", "Peter Makk", "Andreja Petrovic", "Giorgio Tabacco", "Charlie Robertson",
+    # "Ivan Nedelko", "Jumpei Yamasaki", "Lautaro Agustin Falabella", "Jakub Filip", "Mert Naci Türker", "Noah Schachter", "Manuel Plunger", "Emon Van Loben Sels", "Kalin Ivanovski", "Lorenzo Bocchi",
+    # "Joao Victor Couto Loureiro", "Stefano D'Agostino", "Niklas Schell", "Seydina André", "Andrea Fiorentini", "Dragos Nicolae Cazacu", "Diego Schwartzman", "Thanasi Kokkinakis", "Nicolas Ian Kotzen", "Aoran Wang",
+    # "Tiago Cação", "Micah Braswell", "Jack Kennedy", "Manish Sureshkumar", "Aleksandr Lobanov", "Daisuke Sumizawa", "Anas Mazdrashki", "Marko Maksimović", "Trey Hilderbrand", "Ilya Snițari",
+    # "Samuel Vincent Ruggeri", "Shunsuke Nakagawa", "Tomas Serrano Luis", "Marcus Walters", "Nitin Kumar Sinha", "Alexander Klintcharov", "Finn Murgett", "Romain Faucon", "Ezekiel Clark", "Nicolas Jadoun",
+    # "Matthew Forbes", "Theodore Dean", "Calvin Müller", "Anton Shepp", "Isaiah Strode", "Enzo Kohlmann De Freitas", "Lucas Bouquet", "Kasra Rahmani", "Marc Majdandzic", "Benjamin Pietri",
+    # "Carles Hernández", "Nikolai Barsukov", "Nikita Mashtakov", "Kosuke Ogura", "Orlando Luz", "Paul Inchauspe", "Jacob Bradshaw", "Salvador Price", "Ryotaro Taguchi", "Yaojie Zeng",
+    # "Fernando Cavallo", "Miles Jones", "Dev Javia", "Naoya Honda", "Evan Bynoe", "Jesse Delaney", "Zoran Ludoški", "Ryan Colby", "Rudy Quan", "Pablo Masjuan Ginel",
+    # "Stijn Paardekooper", "Adan Freire Da Silva", "Nicolas Zanellato", "Lorenzo Angelini", "Mihai Razvan Marinescu", "Grigoriy Lomakin", "Steven Diez", "Spencer Johnson", "Yun seong Chung", "Juan Sebastian Osorio",
+    # "Qian Sun", "Brian Bozemoj", "Younes Lalami", "Kristjan Tamm", "Pietro Marino", "Diego Fernandez Flores", "Michael Zhu", "David Pichler", "Johannes Ingildsen", "Ozan Baris",
+    # "Taym Al Azmeh", "Oskar Brostrom Poulsen", "Jea Moon Lee", "Pietro Romeo Scomparin", "Thantub Suksumrarn", "Ewen Lumsden", "Justin Schlageter", "Gabriele Bosio", "Maxim Shin", "Ezequiel Monferrer",
+    # "Jeremy Gschwendtner", "Axel Nefve", "Nicolás Barrientos", "Dante Pagani", "Ryo Tabata", "Benjamin Winter Lopez", "Joris De Loore", "Markus Malaszszak", "Karl Friberg", "Bekkhan Atlangeriev",
+    # "Marcello Serafini", "Tomás Martínez", "Benjamin Thomas George", "Daniel Salazar", "Lorenzo Lorusso", "Finn Bass", "Nicolás Villalón", "Žiga Šeško", "Andrew Delgado", "Kuang Qing Xu",
+    # "Aleksa Ćirić", "Mateo Barreiros Reyes", "Suk Hyun Choo", "Dominique Rolland", "Mathias Bourgue", "Gavin Young", "Kiranpal Pannu", "Alejo Lorenzo Lingua Lavallén", "Leonardo Aboian", "William Rejchtman Vinciguerra",
+    # "Zach Stephens", "Enzo Wallart", "Peter Buldorini", "Tymur Bieldiugin", "Jesse Flores", "Mikael Arseneault", "Chirag Duhan"
 ]
 
 player_surname = [x.split()[-1].lower() for x in tennisti]
@@ -647,6 +646,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
