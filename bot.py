@@ -155,7 +155,7 @@ def trova_cognome_nella_lista(lista_tennisti, candidati):
     for nome in candidati:
         nome_norm = normalizza_nome(nome)
 
-        if len(nome_norm) < 5:
+        if len(nome_norm) < 3:
             continue
 
         miglior_match = None
@@ -611,6 +611,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
