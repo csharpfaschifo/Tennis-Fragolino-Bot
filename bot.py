@@ -414,6 +414,12 @@ async def scrittura_in_excel(df_match, update):
     
     # SOLO SE ARRIVA QUI → rimpiazza
     os.replace(temp_path, EXCEL_LOCAL_PATH)
+    applica_schema_excel(
+        EXCEL_LOCAL_PATH,
+        "Statistiche",
+        EXCEL_SCHEMA
+    )
+
 
 # ============================================================================
 # GOOGLE DRIVE FUNCTIONS
@@ -446,6 +452,47 @@ def upload_excel_to_drive():
 
     print("✅ Excel caricato su Drive")
 
+EXCEL_SCHEMA = {
+    "GIOCATORE": "text",
+    "TOT GAME": "int",
+    "TOT GAME PLAYER": "int",
+    "DF": "int",
+    "BREAK": "text",
+    "ACE": "int",
+    "HND": "int",
+    "TIE BREAK": "int",
+    "TORNEO": "text",
+}
+
+def applica_schema_excel(path_excel, sheet, schema):
+    wb = load_workbook(path_excel)
+    ws = wb[sheet]
+
+    header = {cell.value: idx+1 for idx, cell in enumerate(ws[1])}
+
+    for col_name, col_type in schema.items():
+        if col_name not in header:
+            continue
+
+        col_idx = header[col_name]
+
+        for row in ws.iter_rows(min_row=2, min_col=col_idx, max_col=col_idx):
+            cell = row[0]
+
+            if col_type == "text":
+                cell.number_format = "@"
+                if cell.value is not None:
+                    cell.value = str(cell.value)
+
+            elif col_type == "int":
+                cell.number_format = "0"
+                try:
+                    cell.value = int(cell.value)
+                except:
+                    cell.value = 0
+
+    wb.save(path_excel)
+    wb.close()
 
 # ============================================================================
 # TELEGRAM BOT HANDLERS
@@ -650,6 +697,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
