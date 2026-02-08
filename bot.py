@@ -344,7 +344,7 @@ def processa_match(testo_match, lista_tennisti):
             "TOT GAME": sum(game_g1) + sum(game_g2),
             "TOT GAME PLAYER": sum(game_player),
             "DF": doppi_falli[idx],
-            "BREAK": break_point[1 - idx],
+            "BREAK": break_point,
             "ACE": ace[idx],
             "HND": sum(game_player) - sum(game_avv),
             "TIE BREAK": calcola_tie_break(game_g1, game_g2),
@@ -484,7 +484,7 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     try:
         # Messaggio di attesa
-        await update.message.reply_text("📸 Foto ricevuta! Sto processando...")
+        await update.message.reply_text("📸 Foto ricevuta! Estrazione testo...")
         
         # Download foto
         photo_file = await update.message.photo[-1].get_file()
@@ -501,7 +501,6 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         img = gray_scale_img(img)
         
         # OCR
-        await update.message.reply_text("🔍 Estrazione testo...")
         print("DEBUG: sto per chiamare pytesseract.image_to_string")
         try:
             text = pytesseract.image_to_string(
@@ -531,12 +530,14 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
             stats1 = df_match.iloc[0]
         
             await update.message.reply_text(
-                f"✅ *Match salvato (parziale)*\n\n"
                 f"🎾 *{g1.upper()}*\n"
+                f"   • Tot Game: {stats1['TOT GAME']}\n"
                 f"   • Game: {stats1['TOT GAME PLAYER']}\n"
-                f"   • Ace: {stats1['ACE']}\n"
                 f"   • DF: {stats1['DF']}\n"
+                f"   • Break: {stats1['BREAK']}\n"
+                f"   • Ace: {stats1['ACE']}\n"
                 f"   • Handicap: {stats1['HND']:+d}\n\n"
+                f"   • Tie Break: {stats1['TIE BREAK']}\n"
                 f"⚠️ Altro giocatore NON RICONOSCIUTO",
                 parse_mode="Markdown"
             )
@@ -546,21 +547,24 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
             stats2 = df_match[df_match['Giocatore'] == g2].iloc[0]
         
             await update.message.reply_text(
-                f"✅ *Match salvato con successo!*\n\n"
                 f"🎾 *{g1.upper()}*\n"
+                f"   • Tot Game: {stats1['TOT GAME']}\n"
                 f"   • Game: {stats1['TOT GAME PLAYER']}\n"
-                f"   • Ace: {stats1['ACE']}\n"
                 f"   • DF: {stats1['DF']}\n"
+                f"   • Break: {stats1['BREAK']}\n"
+                f"   • Ace: {stats1['ACE']}\n"
                 f"   • Handicap: {stats1['HND']:+d}\n\n"
+                f"   • Tie Break: {stats1['TIE BREAK']}\n"
                 f"🎾 *{g2.upper()}*\n"
+                f"   • Tot Game: {stats2['TOT GAME']}\n"
                 f"   • Game: {stats2['TOT GAME PLAYER']}\n"
-                f"   • Ace: {stats2['ACE']}\n"
                 f"   • DF: {stats2['DF']}\n"
+                f"   • Break: {stats2['BREAK']}\n"
+                f"   • Ace: {stats2['ACE']}\n"
                 f"   • Handicap: {stats2['HND']:+d}\n\n"
-                f"💾 Database aggiornato!",
+                f"   • Tie Break: {stats2['TIE BREAK']}\n",
                 parse_mode="Markdown"
             )
-
         
         # Salva in Excel
         download_excel_from_drive()
@@ -646,6 +650,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
