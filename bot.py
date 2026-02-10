@@ -348,7 +348,7 @@ def processa_match(testo_match, lista_tennisti):
             "ACE": ace[idx],
             "HND": sum(game_player) - sum(game_avv),
             "TIE BREAK": calcola_tie_break(game_g1, game_g2),
-            "TORNEO": "Montpellier ATP"
+            "TORNEO": ""
         })
 
     return pd.DataFrame(risultati)
@@ -697,6 +697,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
