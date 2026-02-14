@@ -275,7 +275,18 @@ def estrai_game_da_testo(testo: str):
         if not match:
             continue
 
-        numeri = list(map(int, match.group(1).split()))
+        blocchi = match.group(1).split()
+        numeri = []
+        
+        for blocco in blocchi:
+            # Caso normale: numero singolo
+            if blocco.isdigit() and int(blocco) <= 7:
+                numeri.append(int(blocco))
+        
+            # Caso OCR attaccato tipo 476
+            elif blocco.isdigit() and 2 <= len(blocco) <= 3 and all(c in "01234567" for c in blocco):
+                numeri.extend(int(c) for c in blocco)
+
         # devono essere almeno 2 e plausibili per tennis
         if len(numeri) < 2:
             continue
@@ -425,7 +436,6 @@ async def scrittura_in_excel(df_match, update):
         "Statistiche",
         EXCEL_SCHEMA
     )
-
 
 # ============================================================================
 # GOOGLE DRIVE FUNCTIONS
@@ -703,6 +713,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
