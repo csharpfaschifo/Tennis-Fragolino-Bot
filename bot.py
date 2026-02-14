@@ -304,14 +304,19 @@ def estrai_statistiche(testo):
     
     df_match = re.search(r'(\d+)\s+Doppi falli\s+(\d+)', testo, re.IGNORECASE)
     doppi_falli = [int(df_match.group(1)), int(df_match.group(2))] if df_match else [0, 0]
-    br1, br2 = "0/0", "0/0" # per evitare conflitti in caso di 1 giocatore mancante
+    # br1, br2 = "0/0", "0/0" # per evitare conflitti in caso di 1 giocatore mancante
 
-    for el in testo.lower().split("\n"):
-        if "break point" in el:
-            br1 = el.split("break point")[0].replace(" ", "")
-            br2 = el.split("break point")[1].replace(" ", "")
-    
-    break_point = [br1, br2]
+    # for el in testo.lower().split("\n"):
+    #     if "break point" in el:
+    #         br1 = el.split("break point")[0].replace(" ", "")
+    #         br2 = el.split("break point")[1].replace(" ", "")
+    break_match = re.search(r'(\d+/\d+)\s*Break point\s*(\d+/\d+)', testo, re.IGNORECASE)
+    if break_match:
+        break_point = [break_match.group(1), break_match.group(2)]
+    else:
+        break_point = ["0/0", "0/0"]
+
+    # break_point = [br1, br2]
     return ace, doppi_falli, break_point
 
 def processa_match(testo_match, lista_tennisti):
@@ -336,6 +341,7 @@ def processa_match(testo_match, lista_tennisti):
     risultati = []
 
     for idx, giocatore in enumerate(giocatori):
+        break_player = break_point[idx] if idx < len(break_point) else "0/0"
         game_player = game_g1 if idx == 0 else game_g2
         game_avv = game_g2 if idx == 0 else game_g1
 
@@ -344,7 +350,7 @@ def processa_match(testo_match, lista_tennisti):
             "TOT GAME": sum(game_g1) + sum(game_g2),
             "TOT GAME PLAYER": sum(game_player),
             "DF": doppi_falli[idx],
-            "BREAK": break_point,
+            "BREAK": break_player,
             "ACE": ace[idx],
             "HND": sum(game_player) - sum(game_avv),
             "TIE BREAK": calcola_tie_break(game_g1, game_g2),
@@ -697,6 +703,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
