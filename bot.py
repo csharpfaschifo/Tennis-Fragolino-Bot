@@ -77,7 +77,7 @@ tennisti = [
     "Adolfo Daniel Vallejo", "Alexander Blockx", "Pablo Carreño Busta", "Stan Wawrinka", "Mattia Bellucci", "Patrick Kypson", "Zachary Svajda", "Jordan Thompson", "Tristan Schoolkate", "Mackenzie McDonald",
     "Rinky Hijikata", "Tomás Barrios Vera", "Shintaro Mochizuki", "Francesco Maestrelli", "Román Andrés Burruchaga", "Chun Hsin Tseng", "David Goffin", "Otto Virtanen", "Christopher O'Connell", "Elmer Møller",
     "Dino Prižmić", "Dušan Lajović", "Rafael Jódar", "Jan Choinski", "Luca Van Assche", "Vilius Gaubas", "Kyrian Jacquet", "Borna Ćorić", "Martin Damm", "Benjamin Bonzi",  
-    "Nicolai Budkov Kjaer", "Billy Harris", "Marco Trungelliti", "Sebastian Ofner", "Coleman Wong", "Nikoloz Basilashvili", "Titouan Droguet", "Chris Rodesch", "Brandon Holt", "Yunchaokete Bu",
+    "Nicolai Budkov Kjaer", "Billy Harris", "Marco Trungelliti", "Sebastian Ofner", "Coleman Wong", "Nikoloz Basilashvili", "Titouan Droguet", "Chris Rodesch", "Brandon Holt", #"Yunchaokete Bu",
     "Nicolás Jarry", "Sho Shimabukuro", "Andrea Pellegrino", "Moez Echargui", "Yibing Wu", "Jaime Faria", "Liam Draxl", "Lukáš Klein", "Michael Zheng", "Dane Sweeny",
     "Arthur Fery", "Giulio Zeppieri", "Martin Landaluce", "Arthur Géa", "Yoshihito Nishioka", "Colton Smith", "Mark Lajal", "Francesco Passaro", "Ugo Blanchet", "Matteo Gigante",
     "Gaël Monfils", "Stefano Travaglia", "Luka Mikrut", "Daniel Mérida", "Henrique Rocha", "Yosuke Watanuki", "Hugo Dellien", "Harold Mayot", "Guy Den Ouden", "Daniil Glinka",
@@ -361,7 +361,7 @@ def processa_match(testo_match, lista_tennisti):
             "TOT GAME": sum(game_g1) + sum(game_g2),
             "TOT GAME PLAYER": sum(game_player),
             "DF": doppi_falli[idx],
-            "BREAK": break_player,
+            "BREAK": [break_player],
             "ACE": ace[idx],
             "HND": sum(game_player) - sum(game_avv),
             "TIE BREAK": calcola_tie_break(game_g1, game_g2),
@@ -713,6 +713,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
