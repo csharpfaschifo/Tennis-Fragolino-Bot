@@ -353,6 +353,7 @@ def processa_match(testo_match, lista_tennisti):
 
     for idx, giocatore in enumerate(giocatori):
         break_player = break_point[idx] if idx < len(break_point) else "0/0"
+        break_subiti = break_point[1 - idx] if len(break_point) > 1 else "0/0"
         game_player = game_g1 if idx == 0 else game_g2
         game_avv = game_g2 if idx == 0 else game_g1
 
@@ -362,6 +363,7 @@ def processa_match(testo_match, lista_tennisti):
             "TOT GAME PLAYER": sum(game_player),
             "DF": doppi_falli[idx],
             "BREAK": [break_player],
+            "BREAK SUBITI": [break_subiti],
             "ACE": ace[idx],
             "HND": sum(game_player) - sum(game_avv),
             "TIE BREAK": calcola_tie_break(game_g1, game_g2),
@@ -383,6 +385,7 @@ async def scrittura_in_excel(df_match, update):
         "TOT GAME PLAYER",
         "DF",
         "BREAK",
+        "BREAK SUBITI",
         "ACE",
         "HND",
         "TIE BREAK",
@@ -474,6 +477,7 @@ EXCEL_SCHEMA = {
     "TOT GAME PLAYER": "int",
     "DF": "int",
     "BREAK": "text",
+    "BREAK SUBITI": "text",
     "ACE": "int",
     "HND": "int",
     "TIE BREAK": "int",
