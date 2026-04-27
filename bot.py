@@ -169,6 +169,62 @@ def gray_scale_img(img):
     return img
 
 # ============================================================================
+# FUNZIONI DI CALCOLO STATISTICHE GIOCATORE
+# ============================================================================
+
+def calcola_statistiche_giocatore(nome_input: str):
+    nome_norm = normalizza_nome(nome_input)
+
+    # match diretto
+    giocatore = mappa_cognomi.get(nome_norm)
+
+    if giocatore is None:
+        return None, None
+
+    if not os.path.exists(EXCEL_LOCAL_PATH):
+        return giocatore, None
+
+    df = pd.read_excel(EXCEL_LOCAL_PATH, sheet_name="Statistiche")
+
+    df_player = df[df["GIOCATORE"].str.lower() == giocatore.lower()]
+    vittorie = (df_player["HND"] > 0).sum()
+    sconfitte = (df_player["HND"] < 0).sum()
+
+    if df_player.empty:
+        return giocatore, None
+
+    # funzione helper min/avg/max
+    def stats_colonna(col):
+        return (
+            df_player[col].mean(),
+            df_player[col].min(),
+            df_player[col].max()
+        )
+
+    stats = {
+        "match": len(df_player),
+        "win": vittorie,
+        "loss": sconfitte,
+        "ace": stats_colonna("ACE"),
+        "df": stats_colonna("DF"),
+        "game": stats_colonna("TOT GAME PLAYER"),
+        "hnd": stats_colonna("HND"),
+        "tie": stats_colonna("TIE BREAK"),
+    }
+
+    # break vinti (parte prima di /)
+    def estrai_break_vinti(val):
+        try:
+            return int(str(val).split("/")[0])
+        except:
+            return 0
+
+    df_player["BREAK_VINTI"] = df_player["BREAK"].apply(estrai_break_vinti)
+    stats["break"] = stats_colonna("BREAK_VINTI")
+
+    return giocatore, stats
+
+# ============================================================================
 # FUNZIONI DI ESTRAZIONE DATI (dal tuo notebook)
 # ============================================================================
 
@@ -681,13 +737,45 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         raise
 
+# async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
+#     """Gestisce messaggi di testo"""
+#     await update.message.reply_text(
+#         "📸 Inviami una *foto* del tabellino, non testo!\n\n"
+#         "Usa /help per maggiori informazioni.",
+#         parse_mode='Markdown'
+#     )
 
 async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Gestisce messaggi di testo"""
+    testo = update.message.text.strip()
+
+    download_excel_from_drive()
+
+    giocatore, stats = calcola_statistiche_giocatore(testo)
+
+    if giocatore is None:
+        await update.message.reply_text("❌ Giocatore non riconosciuto ❌")
+        return
+
+    if stats is None:
+        await update.message.reply_text(
+            f"⚠️ Giocatore {giocatore} riconosciuto, ma nessun dato trovato ⚠️"
+        )
+        return
+
+    def fmt(stat):
+        media, minimo, massimo = stat
+        return f"{media:.2f} [{minimo} - {massimo}]"
+
     await update.message.reply_text(
-        "📸 Inviami una *foto* del tabellino, non testo!\n\n"
-        "Usa /help per maggiori informazioni.",
-        parse_mode='Markdown'
+        f"📊 *Statistiche {giocatore.upper()}*\n\n"
+        f"🎾 Match giocati: {stats['match']} ({stats['win']}W - {stats['loss']}L)\n"
+        f"⚡ Ace medi: {fmt(stats['ace'])}\n"
+        f"❌ Doppi falli medi: {fmt(stats['df'])}\n"
+        f"🎮 Game medi: {fmt(stats['game'])}\n"
+        f"📈 Handicap medio: {fmt(stats['hnd'])}\n"
+        f"🔥 Tie-break medi: {fmt(stats['tie'])}\n"
+        f"💥 Break medi: {fmt(stats['break'])}",
+        parse_mode="Markdown"
     )
 
 # ============================================================================
