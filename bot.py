@@ -213,17 +213,26 @@ def calcola_statistiche_giocatore(nome_input: str):
     }
 
     # break vinti (parte prima di /)
-    def estrai_break_vinti(val):
-        try:
-            # se è lista tipo ['3/4']
-            if isinstance(val, list):
-                val = val[0]
+    # def estrai_break_vinti(val):
+    #     try:
+    #         # se è lista tipo ['3/4']
+    #         if isinstance(val, list):
+    #             val = val[0]
     
-            val = str(val).strip()
-            return int(val.split("/")[0])
-        except:
-            return 0
+    #         val = str(val).strip()
+    #         return int(val.split("/")[0])
+    #     except:
+    #         return 0
 
+    def estrai_break_vinti(val):
+    try:
+        s = str(val).strip()
+        s = s.replace("[", "").replace("]", "").replace("'", "")
+        return int(s.split("/")[0])
+    except:
+        return 0
+
+    df_player = df_player.copy()
     df_player["BREAK_VINTI"] = df_player["BREAK"].apply(estrai_break_vinti)
     stats["break"] = stats_colonna("BREAK_VINTI")
 
