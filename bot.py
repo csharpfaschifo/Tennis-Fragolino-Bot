@@ -225,12 +225,12 @@ def calcola_statistiche_giocatore(nome_input: str):
     #         return 0
 
     def estrai_break_vinti(val):
-    try:
-        s = str(val).strip()
-        s = s.replace("[", "").replace("]", "").replace("'", "")
-        return int(s.split("/")[0])
-    except:
-        return 0
+        try:
+            s = str(val).strip()
+            s = s.replace("[", "").replace("]", "").replace("'", "")
+            return int(s.split("/")[0])
+        except:
+            return 0
 
     df_player = df_player.copy()
     df_player["BREAK_VINTI"] = df_player["BREAK"].apply(estrai_break_vinti)
