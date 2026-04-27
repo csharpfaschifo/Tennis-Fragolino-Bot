@@ -234,7 +234,9 @@ def calcola_statistiche_giocatore(nome_input: str):
 
     df_player = df_player.copy()
     df_player["BREAK_VINTI"] = df_player["BREAK"].apply(estrai_break_vinti)
+    df_player["BREAK_SUBITI_NUM"] = df_player["BREAK SUBITI"].apply(estrai_break_vinti)
     stats["break"] = stats_colonna("BREAK_VINTI")
+    stats["break_subiti"] = stats_colonna("BREAK_SUBITI_NUM")
 
     return giocatore, stats
 
@@ -789,6 +791,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f"📈 Handicap medio: {fmt(stats['hnd'])}\n"
         f"🔥 Tie-break medi: {fmt(stats['tie'])}\n"
         f"💥 Break medi: {fmt(stats['break'])}",
+        f"🛑 Break subiti medi: {fmt(stats['break_subiti'])}",
         parse_mode="Markdown"
     )
 
