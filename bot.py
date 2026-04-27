@@ -215,7 +215,12 @@ def calcola_statistiche_giocatore(nome_input: str):
     # break vinti (parte prima di /)
     def estrai_break_vinti(val):
         try:
-            return int(str(val).split("/")[0])
+            # se è lista tipo ['3/4']
+            if isinstance(val, list):
+                val = val[0]
+    
+            val = str(val).strip()
+            return int(val.split("/")[0])
         except:
             return 0
 
@@ -764,7 +769,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     def fmt(stat):
         media, minimo, massimo = stat
-        return f"{media:.2f} [{minimo} - {massimo}]"
+        return f"{media:.2f} ({minimo} - {massimo})"
 
     await update.message.reply_text(
         f"📊 *Statistiche {giocatore.upper()}*\n\n"
